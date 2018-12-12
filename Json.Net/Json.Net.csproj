@@ -24,6 +24,9 @@ var restoredPet = Json.Deserialize&lt;Pet&gt;(petJson);</Description>
     <PackageReleaseNotes>Alpha release.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
   </PropertyGroup>
 
 </Project>
