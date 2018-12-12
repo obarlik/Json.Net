@@ -5,7 +5,7 @@ Minimalistic JSON handler
 ## Usage instructions
 Define a POCO class, with just field definitions.
 
-```
+``` cs
 class Pet
 {
   public int id;
@@ -14,11 +14,13 @@ class Pet
 ```
 
 ### Serializing an object:
-`var petJson = JsonNet.Serialize(originalPet, true);`
+``` cs
+var petJson = JsonNet.Serialize(originalPet, true);
+```
 
 petJson's value:
 
-```
+``` json
 {
 	"id" : 1,
 	"name" : "gucci",
@@ -38,11 +40,13 @@ petJson's value:
 ```
 
 ### Deserializing from JSON string:
-`var restoredPet = JsonNet.Deserialize<Pet>(petJson);`              
+``` cs
+var restoredPet = JsonNet.Deserialize<Pet>(petJson);
+```            
 
 ### Custom type converters
 You can define and use custom type converters to control serialization/deserialization.
-```
+``` cs
 var dateConverter = 
   new JsonConverter<DateTime>(
     dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
@@ -52,18 +56,22 @@ var petJson = JsonNet.Serialize(originalPet, false, dateConverter);
 ```
 
 petJson's value:
-```
+``` cs
 {"id":1,"name":"gucci","birth":"2018-12-12T14:13:46","alive":true,"gender":1,"dictType":{"Key1":"Value1","Key2":"Value2"},"intArray":[1,2,3]}
 ```
 
 ## Reference:
 
 ### Name space
-  `using Json.Net;`
+``` cs
+using Json.Net;
+```
 
 ### Methods
 ***
-  `string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)`
+``` cs
+string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)`
+```
 
   #### Description
   Serializes an object to its JSON text representation.
@@ -74,7 +82,9 @@ petJson's value:
   converters : Custom type converters. Default: empty
   
 ***
-  `T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)`
+``` cs
+T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)`
+```
   
   #### Description
   Deserializes an object from a JSON text.
@@ -87,7 +97,7 @@ petJson's value:
 ***
 
 ### Converter interface
-```
+``` cs
 public interface IJsonConverter
 {
   Type GetConvertingType();
