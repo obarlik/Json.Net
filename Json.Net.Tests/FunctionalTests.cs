@@ -17,17 +17,13 @@ namespace Json.Net.Tests
 
         class Pet
         {
-            public int id = 1;
-            public string name = "gucci";
-            public DateTime birth = DateTime.Now;
-            public bool alive = true;
-            public Gender gender = Gender.Male;
-            public Dictionary<string, string> dictType = new Dictionary<string, string>()
-            {
-                {"Key1","Value1"},
-                {"Key2","Value2"},
-            };
-            public int[] intArray = new[] { 1, 2, 3 };
+            public int id;
+            public string name;
+            public DateTime birth;
+            public bool alive;
+            public Gender gender;
+            public Dictionary<string, string> dictType;
+            public int[] intArray;
         }
 
 
@@ -35,7 +31,20 @@ namespace Json.Net.Tests
         public void TestMethod1()
         {
             var json = new Json();
-            var originalPet = new Pet();
+            var originalPet = new Pet()
+            {
+                id = 1,
+                name = "gucci",
+                birth = DateTime.Now,
+                alive = true,
+                gender = Gender.Male,
+                dictType = new Dictionary<string, string>()
+                {
+                    {"Key1","Value1"},
+                    {"Key2","Value2"},
+                },
+                intArray = new[] { 1, 2, 3 }
+            };
 
             var petJson = Json.Serialize(originalPet);
             var restoredPet = json.Deserialize<Pet>(petJson);
