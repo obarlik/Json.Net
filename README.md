@@ -85,7 +85,6 @@ using Json.Net;
 ```
 
 ### Methods
-***
 ``` cs
 string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
 ```
@@ -100,7 +99,7 @@ string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[
   
   converters : Custom type converters. Default: empty
   
-***
+
 ``` cs
 T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
 ```
