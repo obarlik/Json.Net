@@ -13,9 +13,9 @@
     <PackageReleaseNotes>Alpha release.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.1.1</FileVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.1.2</FileVersion>
   </PropertyGroup>
 
 </Project>
