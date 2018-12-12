@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Json.Net</PackageId>
+    <Authors>Onur Barlik</Authors>
+    <Company>Onur Barlik</Company>
+    <Description>A minimalistic JSON handler library.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/obarlik/Json.Net</PackageProjectUrl>
+    <PackageTags>json</PackageTags>
+    <PackageReleaseNotes>Alpha release.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
   </PropertyGroup>
 
 </Project>
