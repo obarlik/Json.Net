@@ -15,6 +15,7 @@ namespace Json.Net
         string text;
         char next;
 
+
         public Json()
         {
         }
@@ -22,14 +23,8 @@ namespace Json.Net
 
         public T Deserialize<T>(string json)
         {
-            return (T)Parse(typeof(T), json);
-        }
-
-
-        public object Parse(Type type, string json)
-        {
             if ((json ?? "") == "")
-                return null;
+                return default(T);
 
             str = new StreamReader(
                   new MemoryStream(
@@ -38,9 +33,9 @@ namespace Json.Net
             text = "";
             next = (char)str.Peek();
 
-            return FromJson(type);
+            return (T)FromJson(typeof(T));
         }
-
+        
 
         char ReadChar()
         {
@@ -223,20 +218,33 @@ namespace Json.Net
 
                 result = Activator.CreateInstance(type);
 
+                var nameType = result is IDictionary ?
+                    type.GenericTypeArguments[0] :
+                    typeof(string);
+
+                var valueType = result is IDictionary ?
+                    type.GenericTypeArguments[1] :
+                    null;
+
                 while (true)
                 {
-                    var name = (string)FromJson(typeof(string));
+                    var name = (string)FromJson(nameType);
 
                     Match(':');
 
-                    var field = type.GetField(name);
+                    var field = valueType == null ? type.GetField(name) : null;
+                    var fieldType = field == null ? valueType : field.FieldType;
 
-                    var value = FromJson(field == null ? typeof(object) : field.FieldType);
+                    var value = FromJson(fieldType);
+                    value = FromJsonType(value, fieldType);
 
                     if (field != null)
                     {
-                        value = FromJsonType(value, field.FieldType);
                         field.SetValue(result, value);
+                    }
+                    else
+                    {
+                        ((IDictionary)result).Add(name, value);
                     }
 
                     if (!TryMatch(','))
@@ -261,30 +269,6 @@ namespace Json.Net
                                     .MakeGenericType(type.GenericTypeArguments));
                     else
                         result = new List<object>();
-
-                    while (true)
-                    {
-                        var item = FromJson(null);
-
-                        if (type.HasElementType)
-                            item = FromJsonType(item, type.GetElementType());
-                        else if (type.IsGenericType)
-                            item = FromJsonType(item, type.GenericTypeArguments[0]);
-
-                        ((IList)result).Add(item);
-
-                        if (!TryMatch(','))
-                            break;
-                    }
-                }
-                else if (type.GetInterface("IDictionary") != null)
-                {
-                    if (type.IsGenericType)
-                        result = Activator.CreateInstance(
-                                    typeof(Dictionary<,>)
-                                    .MakeGenericType(type.GenericTypeArguments));
-                    else
-                        result = new Dictionary<string, object>();
 
                     while (true)
                     {
@@ -472,6 +456,15 @@ namespace Json.Net
              || obj is ulong || obj is ulong?)
                 return string.Format(CultureInfo.InvariantCulture, "{0}", obj);
 
+            if (obj is IDictionary)
+            {
+                return "{\n"
+                     + string.Join(",\n", ((IDictionary)obj)
+                        .OfType<object>()
+                        .Select(o => "\t" + Serialize(o).Replace("\n", "\n\t")))
+                     + "\n}";
+            }
+
             if (obj is IEnumerable)
             {
                 return "[\n"
@@ -503,7 +496,7 @@ namespace Json.Net
                     var k = kvt.GetProperty("Key").GetValue(obj);
                     var v = kvt.GetProperty("Value").GetValue(obj);
 
-                    return string.Format("{{ {0} : {1} }}", Serialize(k), Serialize(v).Replace("\n", "\n\t"));
+                    return string.Format("{0} : {1}", Serialize(k), Serialize(v).Replace("\n", "\n\t"));
                 }
             }
 
