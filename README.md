@@ -15,7 +15,7 @@ class Pet
 
 Serializing an object:
 --------------------------------------------
-var petJson = Json.Serialize(originalPet);
+var petJson = Json.Serialize(originalPet, true);
 
 petJson's value:
 
