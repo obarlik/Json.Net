@@ -5,18 +5,7 @@
     <PackageId>Json.Net</PackageId>
     <Authors>Onur Barlik</Authors>
     <Company>Onur Barlik</Company>
-    <Description>A minimalistic JSON handler library.
-
-Usage:
--------------------
-class Pet
-{
-public int id;
-public string name;
-}
-
-var petJson = Json.Serialize(pet);
-var restoredPet = Json.Deserialize&lt;Pet&gt;(petJson);</Description>
+    <Description>A minimalistic JSON handler library.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net</PackageProjectUrl>
