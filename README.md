@@ -92,8 +92,10 @@ string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[
   Serializes an object to its JSON text representation.
 
   #### Parameters
-  obj        : Object to be serialized
-  indent     : If true, formats output text. Default: false
+  obj        : Object to be serialized  
+  
+  indent     : If true, formats output text. Default: false  
+  
   converters : Custom type converters. Default: empty
   
 ***
@@ -106,7 +108,9 @@ T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
   
   #### Parameters
   T : Deserialized object's type
+  
   json : JSON text
+  
   converters : Custom converters. Default: empty
   
 ***
