@@ -1,5 +1,5 @@
 # Json.Net
-Minimalistic JSON handler
+A minimalistic JSON handler
 
 
 ## Usage instructions
