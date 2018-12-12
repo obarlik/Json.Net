@@ -30,7 +30,6 @@ namespace Json.Net.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var json = new Json();
             var originalPet = new Pet()
             {
                 id = 1,
@@ -47,7 +46,7 @@ namespace Json.Net.Tests
             };
 
             var petJson = Json.Serialize(originalPet);
-            var restoredPet = json.Deserialize<Pet>(petJson);
+            var restoredPet = Json.Deserialize<Pet>(petJson);
 
             Debug.Assert(restoredPet.id == originalPet.id);
             Debug.Assert(restoredPet.name == originalPet.name);

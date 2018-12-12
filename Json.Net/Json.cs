@@ -21,19 +21,22 @@ namespace Json.Net
         }
 
 
-        public T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json)
         {
+            var parser = new Json();
+
             if ((json ?? "") == "")
                 return default(T);
 
-            str = new StreamReader(
+            parser.str = 
+                new StreamReader(
                   new MemoryStream(
                     Encoding.Default.GetBytes(json)));
 
-            text = "";
-            next = (char)str.Peek();
+            parser.text = "";
+            parser.next = (char)parser.str.Peek();
 
-            return (T)FromJson(typeof(T));
+            return (T)parser.FromJson(typeof(T));
         }
         
 
