@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Json.Net.Tests
 {
     [TestClass]
-    public class FunctionalTests
+    public class FunctionalityTests
     {
         enum Gender
         {

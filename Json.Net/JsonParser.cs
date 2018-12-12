@@ -12,82 +12,17 @@ namespace Json.Net
     /// <summary>
     /// JSON Parser Class
     /// </summary>
-    public class JsonParser
+    public class JsonParser : ParserBase
     {
-        StreamReader str;
-        string text;
-        char next;
         IJsonConverter[] Converters;
 
+
         public JsonParser(string json, params IJsonConverter[] converters)
+            : base(json)
         {
-            str =
-                new StreamReader(
-                  new MemoryStream(
-                    Encoding.Default.GetBytes(json ?? "")));
-
-            text = "";
-            next = (char)str.Peek();
-
             Converters = converters;
         }
-
-
-
-
-        char ReadChar()
-        {
-            if (!str.EndOfStream)
-                return (char)str.Read();
-
-            throw new FormatException("Unexpected end of string!");
-        }
-
-        void MoveChar()
-        {
-            ReadChar();
-
-            if (!str.EndOfStream)
-                next = (char)str.Peek();
-            else
-                next = char.MinValue;
-        }
-
-        void SkipWhite()
-        {
-            while (" \t\r\n".Contains(next))
-                MoveChar();
-        }
-
-        void AppendChar()
-        {
-            text += next;
-            MoveChar();
-        }
-
-        bool TryMatch(char c)
-        {
-            SkipWhite();
-
-            if (next == c)
-            {
-                MoveChar();
-                return true;
-            }
-
-            return false;
-        }
-
-        void Match(char c)
-        {
-            SkipWhite();
-
-            if (next == c)
-                MoveChar();
-            else
-                throw new FormatException(c + " expected!");
-        }
-
+        
 
         object FromJsonType(object obj, Type targetType)
         {
@@ -300,15 +235,15 @@ namespace Json.Net
             }
             else if (TryMatch('"'))
             {
-                text = "";
+                Text = "";
 
-                while (next != '"')
+                while (NextChar != '"')
                 {
-                    if (next == '\\')
+                    if (NextChar == '\\')
                     {
                         MoveChar();
 
-                        switch (next)
+                        switch (NextChar)
                         {
                             case '"':
                             case '\\':
@@ -317,41 +252,41 @@ namespace Json.Net
                                 break;
 
                             case 'b':
-                                next = (char)8;
+                                NextChar = (char)8;
                                 AppendChar();
                                 break;
 
                             case 't':
-                                next = (char)9;
+                                NextChar = (char)9;
                                 AppendChar();
                                 break;
 
                             case 'n':
-                                next = (char)10;
+                                NextChar = (char)10;
                                 AppendChar();
                                 break;
 
                             case 'f':
-                                next = (char)12;
+                                NextChar = (char)12;
                                 AppendChar();
                                 break;
 
                             case 'r':
-                                next = (char)13;
+                                NextChar = (char)13;
                                 AppendChar();
                                 break;
 
                             case 'u':
-                                var t = text;
+                                var t = Text;
 
-                                text = "";
+                                Text = "";
 
                                 MoveChar();
 
-                                while (text.Length < 4 && "0123456789abcdefABCDEF".Contains(next))
+                                while (Text.Length < 4 && "0123456789abcdefABCDEF".Contains(NextChar))
                                     AppendChar();
 
-                                text = t + char.ConvertFromUtf32(int.Parse("0x" + text));
+                                Text = t + char.ConvertFromUtf32(int.Parse("0x" + Text));
                                 break;
                         }
                     }
@@ -363,9 +298,9 @@ namespace Json.Net
 
                 Match('"');
 
-                return text;
+                return Text;
             }
-            else if (next == 't')
+            else if (NextChar == 't')
             {
                 Match('t');
                 Match('r');
@@ -374,7 +309,7 @@ namespace Json.Net
 
                 return true;
             }
-            else if (next == 'f')
+            else if (NextChar == 'f')
             {
                 Match('f');
                 Match('a');
@@ -384,7 +319,7 @@ namespace Json.Net
 
                 return false;
             }
-            else if (next == 'n')
+            else if (NextChar == 'n')
             {
                 Match('n');
                 Match('u');
@@ -393,46 +328,46 @@ namespace Json.Net
 
                 return null;
             }
-            else if ("-0123456789".Contains(next))
+            else if ("-0123456789".Contains(NextChar))
             {
-                text = "";
+                Text = "";
 
-                if (next == '-')
+                if (NextChar == '-')
                     AppendChar();
 
-                if (next == '0')
+                if (NextChar == '0')
                 {
                     AppendChar();
                 }
-                else if ("123456789".Contains(next))
+                else if ("123456789".Contains(NextChar))
                 {
-                    while ("0123456789".Contains(next))
+                    while ("0123456789".Contains(NextChar))
                         AppendChar();
                 }
                 else
                     throw new FormatException("Digit expected!");
 
-                if (next == '.')
+                if (NextChar == '.')
                 {
                     AppendChar();
 
-                    while ("0123456789".Contains(next))
+                    while ("0123456789".Contains(NextChar))
                         AppendChar();
                 }
 
-                if (next == 'e' || next == 'E')
+                if (NextChar == 'e' || NextChar == 'E')
                 {
-                    next = 'e';
+                    NextChar = 'e';
                     AppendChar();
 
-                    if (next == '+' || next == '-')
+                    if (NextChar == '+' || NextChar == '-')
                         AppendChar();
 
-                    while ("0123456789".Contains(next))
+                    while ("0123456789".Contains(NextChar))
                         AppendChar();
                 }
 
-                return double.Parse(text, CultureInfo.InvariantCulture);
+                return double.Parse(Text, CultureInfo.InvariantCulture);
             }
 
             return null;
