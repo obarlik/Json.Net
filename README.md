@@ -70,11 +70,9 @@ using Json.Net;
   string Json.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
 
   Description
-  ------------
   Serializes an object to its JSON text representation.
 
   Parameters
-  ------------
   obj        : Object to be serialized
   indent     : If true, formats output text. Default: false
   converters : Custom type converters. Default: empty
@@ -83,11 +81,9 @@ using Json.Net;
   T Json.Deserialize<T>(string json, params IJsonConverter[] converters)
   
   Description
-  ------------
   Deserializes an object from a JSON text.
   
   Parameters
-  ------------
   T : Deserialized object's type
   json : JSON text
   converters : Custom converters. Default: empty
