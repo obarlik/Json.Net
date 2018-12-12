@@ -67,27 +67,28 @@ Reference:
 ---------------------------------------------
 using Json.Net;
 
-  string Json.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
+  Function Method
+  	string Json.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
 
   Description
-  Serializes an object to its JSON text representation.
+  	Serializes an object to its JSON text representation.
 
   Parameters
-  obj        : Object to be serialized
-  indent     : If true, formats output text. Default: false
-  converters : Custom type converters. Default: empty
+	  obj        : Object to be serialized
+	  indent     : If true, formats output text. Default: false
+	  converters : Custom type converters. Default: empty
   
 
-  T Json.Deserialize<T>(string json, params IJsonConverter[] converters)
+  Function Method
+  	T Json.Deserialize<T>(string json, params IJsonConverter[] converters)
   
   Description
-  Deserializes an object from a JSON text.
+  	Deserializes an object from a JSON text.
   
   Parameters
-  T : Deserialized object's type
-  json : JSON text
-  converters : Custom converters. Default: empty
-  
+  	T : Deserialized object's type
+  	json : JSON text
+  	converters : Custom converters. Default: empty
   
   // Converter interface
   public interface IJsonConverter
