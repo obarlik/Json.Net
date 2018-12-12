@@ -56,7 +56,7 @@ var petJson = JsonNet.Serialize(originalPet, false, dateConverter);
 ```
 
 petJson's value:
-``` cs
+``` javascript
 {"id":1,"name":"gucci","birth":"2018-12-12T14:13:46","alive":true,"gender":1,"dictType":{"Key1":"Value1","Key2":"Value2"},"intArray":[1,2,3]}
 ```
 
@@ -70,7 +70,7 @@ using Json.Net;
 ### Methods
 ***
 ``` cs
-string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)`
+string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
 ```
 
   #### Description
@@ -83,7 +83,7 @@ string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[
   
 ***
 ``` cs
-T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)`
+T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
 ```
   
   #### Description
