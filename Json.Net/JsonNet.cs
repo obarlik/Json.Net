@@ -12,7 +12,7 @@ namespace Json.Net
     /// <summary>
     /// Json.Net Helper Class
     /// </summary>
-    public static class Json
+    public static class JsonNet
     {
         /// <summary>
         /// Deserializes an object from a JSON text.

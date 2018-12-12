@@ -46,8 +46,8 @@ namespace Json.Net.Tests
                 intArray = new[] { 1, 2, 3 }
             };
 
-            var petJson = Json.Serialize(originalPet, true);
-            var restoredPet = Json.Deserialize<Pet>(petJson);
+            var petJson = JsonNet.Serialize(originalPet, true);
+            var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 
             Debug.Assert(restoredPet.id == originalPet.id);
             Debug.Assert(restoredPet.name == originalPet.name);
@@ -64,12 +64,12 @@ namespace Json.Net.Tests
                     dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
                     s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
 
-            petJson = Json.Serialize(
+            petJson = JsonNet.Serialize(
                 originalPet,
                 false,
                 dateConverter);
 
-            restoredPet = Json.Deserialize<Pet>(petJson);
+            restoredPet = JsonNet.Deserialize<Pet>(petJson);
 
             Debug.Assert(restoredPet.id == originalPet.id);
             Debug.Assert(restoredPet.name == originalPet.name);
