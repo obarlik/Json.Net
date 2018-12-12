@@ -98,7 +98,8 @@ string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[
   indent     : If true, formats output text. Default: false  
   
   converters : Custom type converters. Default: empty
-  
+
+***
 
 ``` cs
 T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
