@@ -20,7 +20,7 @@ var petJson = JsonNet.Serialize(originalPet, true);
 
 petJson's value:
 
-``` json
+``` js
 {
 	"id" : 1,
 	"name" : "gucci",
