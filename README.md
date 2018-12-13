@@ -5,7 +5,7 @@ Framework : .NET Standard 2.0
 
 
 ## Usage instructions
-Define a POCO class, with just field definitions.
+Define a POCO class...
 
 ``` cs
 class Pet
