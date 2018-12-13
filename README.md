@@ -36,7 +36,7 @@ var dateConverter =
 var petJson = JsonNet.Serialize(originalPet, dateConverter);
 ```
 
-## Reference:
+## Reference
 
 ### Name space
 ``` cs
