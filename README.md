@@ -17,12 +17,12 @@ class Pet
 ***
 Serialization...
 ``` cs
-var petJson = JsonNet.Serialize(originalPet);
+var petJson = JsonNet.Serialize(pet);
 ```
 ***
 Deserialization...
 ``` cs
-var restoredPet = JsonNet.Deserialize<Pet>(petJson);
+var pet = JsonNet.Deserialize<Pet>(petJson);
 ```            
 ***
 You can also define and use custom type converters to control serialization/deserialization.
@@ -32,7 +32,7 @@ var dateConverter =
     dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
     s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
   
-var petJson = JsonNet.Serialize(originalPet, dateConverter);
+var petJson = JsonNet.Serialize(pet, dateConverter);
 ```
 
 ## Reference
