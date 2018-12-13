@@ -91,5 +91,25 @@ namespace Json.Net.Tests
 
             Debug.Assert(restoredPet.birth.ToString() == OriginalPet.birth.ToString());
         }
+
+
+        public class Employee
+        {
+            public int id { get; set; }
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Dept { get; set; }
+
+        }
+
+        [TestMethod]
+        public void AnotherTest()
+        {
+            var json = "[{\"id\":2,\"Name\":\"Debendra\",\"Email\":\"debendra256@gmail.com\"," +
+                "\"Dept\":\"IT\"},{\"id\":3,\"Name\":\"Manoj\",\"Email\":\"ManojMass@gmail.com\"," +
+                "\"Dept\":\"Sales\"},{\"id\":6,\"Name\":\"Kumar\",\"Email\":\"Kumar256@gmail.com\",\"Dept\":\"IT\"}]";
+
+            var empList = JsonNet.Deserialize<Employee[]>(json);
+        }
     }
 }

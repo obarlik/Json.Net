@@ -26,10 +26,8 @@ namespace Json.Net
             if ((json ?? "").Trim() == "")
                 return default(T);
 
-            return (T)new JsonParser(
-                    new StringReader(json),
-                    converters)
-                .FromJson(typeof(T));
+            return (T)new JsonParser(new StringReader(json), converters)
+                   .FromJson(typeof(T));
         }
 
 

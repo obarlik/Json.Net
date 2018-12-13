@@ -212,43 +212,39 @@ namespace Json.Net
             }
             else if (TryMatch('['))
             {
-                if (type.GetInterface("IList") != null)
+                var elementType =
+                    type.IsArray ?
+                        type.GetElementType() :
+                    type.IsGenericType ?
+                        type.GenericTypeArguments[0] :
+                        typeof(object);
+
+                result = Activator.CreateInstance(
+                            typeof(List<>).MakeGenericType(elementType));
+
+                while (true)
                 {
-                    if (type.IsArray)
-                        result = Activator.CreateInstance(
-                                    typeof(List<>)
-                                    .MakeGenericType(type.GetElementType()));
+                    var item = FromJson(elementType);
+
+                    if (type.HasElementType)
+                        item = FromJsonType(item, type.GetElementType());
                     else if (type.IsGenericType)
-                        result = Activator.CreateInstance(
-                                    typeof(List<>)
-                                    .MakeGenericType(type.GenericTypeArguments));
-                    else
-                        result = new List<object>();
+                        item = FromJsonType(item, type.GenericTypeArguments[0]);
 
-                    while (true)
-                    {
-                        var item = FromJson(null);
+                    ((IList)result).Add(item);
 
-                        if (type.HasElementType)
-                            item = FromJsonType(item, type.GetElementType());
-                        else if (type.IsGenericType)
-                            item = FromJsonType(item, type.GenericTypeArguments[0]);
-
-                        ((IList)result).Add(item);
-
-                        if (!TryMatch(','))
-                            break;
-                    }
+                    if (!TryMatch(','))
+                        break;
                 }
 
                 Match("]");
-
-                return result;
+                
+                return FromJsonType(result, type);
             }
             else if (TryMatch('"'))
             {
                 var text = new StringBuilder();
-                
+
                 while (NextChar != '"')
                 {
                     if (NextChar == '\\')
