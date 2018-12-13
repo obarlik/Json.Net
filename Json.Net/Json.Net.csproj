@@ -10,13 +10,20 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>- Property serialization is supported now.
-- Added streams support.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updated functional tests.
+- Updated release notes.
+
+What's New:
+- Property serialization is supported now.
+- Added streams support.
+
+Breaking changes:
+- Removed JSON indending support because of performance penalty.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.7</Version>
-    <AssemblyVersion>1.0.7.1</AssemblyVersion>
-    <FileVersion>1.0.7.1</FileVersion>
+    <Version>1.0.8</Version>
+    <AssemblyVersion>1.0.8.1</AssemblyVersion>
+    <FileVersion>1.0.8.1</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
