@@ -15,7 +15,7 @@ class Pet
 }
 ```
 
-### Serializing an object:
+### Serializing
 ``` cs
 var petJson = JsonNet.Serialize(originalPet);
 ```
@@ -41,7 +41,7 @@ petJson's value:
 }
 ```
 
-### Deserializing from JSON string:
+### Deserializing
 ``` cs
 var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 ```            
