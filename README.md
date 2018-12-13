@@ -17,7 +17,7 @@ class Pet
 
 ### Serializing an object:
 ``` cs
-var petJson = JsonNet.Serialize(originalPet, true);
+var petJson = JsonNet.Serialize(originalPet);
 ```
 
 petJson's value:
@@ -54,10 +54,11 @@ var dateConverter =
     dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
     s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
   
-var petJson = JsonNet.Serialize(originalPet, true, dateConverter);
+var petJson = JsonNet.Serialize(originalPet, dateConverter);
 ```
 
 petJson's value:
+
 ``` javascript
 {
 	"id" : 1,
@@ -86,7 +87,7 @@ using Json.Net;
 
 ### Methods
 ``` cs
-string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[] converters)
+string JsonNet.Serialize(object obj, params IJsonConverter[] converters)
 ```
 
   #### Description
@@ -95,7 +96,19 @@ string JsonNet.Serialize(object obj, bool indent = false, params IJsonConverter[
   #### Parameters
   obj        : Object to be serialized  
   
-  indent     : If true, formats output text. Default: false  
+  converters : Custom type converters. Default: empty
+
+***
+
+``` cs
+void SerializeToStream(object obj, Stream stream, params IJsonConverter[] converters)
+```
+
+  #### Description
+  Serializes an object to a JSON text stream destination.
+
+  #### Parameters
+  obj        : Object to be serialized  
   
   converters : Custom type converters. Default: empty
 
@@ -107,6 +120,22 @@ T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
   
   #### Description
   Deserializes an object from a JSON text.
+  
+  #### Parameters
+  T : Deserialized object's type
+  
+  json : JSON text
+  
+  converters : Custom converters. Default: empty
+  
+***
+
+``` cs
+T DeserializeFromStream<T>(Stream stream, params IJsonConverter[] converters)
+```
+  
+  #### Description
+  Deserializes an object from a JSON text stream source.
   
   #### Parameters
   T : Deserialized object's type
