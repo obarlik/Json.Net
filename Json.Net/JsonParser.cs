@@ -16,9 +16,19 @@ namespace Json.Net
     {
         IJsonConverter[] Converters;
 
+        readonly Dictionary<char, char> EscapeMap = 
+            new Dictionary<char, char>()
+            {
+                { 'b', (char)8 },
+                { 't', (char)9 },
+                { 'n', (char)10 },
+                { 'f', (char)12 },
+                { 'r', (char)13 }
+            };
 
-        public JsonParser(string json, params IJsonConverter[] converters)
-            : base(json)
+
+        public JsonParser(TextReader jsonReader, params IJsonConverter[] converters)
+            : base(jsonReader)
         {
             Converters = converters;
         }
@@ -172,10 +182,12 @@ namespace Json.Net
                 {
                     var name = (string)FromJson(nameType);
 
-                    Match(':');
+                    Match(":");
 
-                    var field = valueType == null ? type.GetField(name) : null;
-                    var fieldType = field == null ? valueType : field.FieldType;
+                    var map = SerializerMap.GetSerializerMap(type);
+
+                    var field = valueType == null ? map.Members.FirstOrDefault(m => m.Name == name) : null;
+                    var fieldType = field == null ? valueType : field.ValueType;
 
                     var value = FromJson(fieldType);
 
@@ -194,7 +206,7 @@ namespace Json.Net
                         break;
                 }
 
-                Match('}');
+                Match("}");
 
                 return result;
             }
@@ -229,149 +241,117 @@ namespace Json.Net
                     }
                 }
 
-                Match(']');
+                Match("]");
 
                 return result;
             }
             else if (TryMatch('"'))
             {
-                Text = "";
-
+                var text = new StringBuilder();
+                
                 while (NextChar != '"')
                 {
                     if (NextChar == '\\')
                     {
-                        MoveChar();
+                        ReadChar();
 
                         switch (NextChar)
                         {
-                            case '"':
-                            case '\\':
-                            case '/':
-                                AppendChar();
-                                break;
-
                             case 'b':
-                                NextChar = (char)8;
-                                AppendChar();
-                                break;
-
                             case 't':
-                                NextChar = (char)9;
-                                AppendChar();
-                                break;
-
                             case 'n':
-                                NextChar = (char)10;
-                                AppendChar();
-                                break;
-
                             case 'f':
-                                NextChar = (char)12;
-                                AppendChar();
-                                break;
-
                             case 'r':
-                                NextChar = (char)13;
-                                AppendChar();
+                                KeepNext(text, EscapeMap[NextChar]);
                                 break;
 
                             case 'u':
-                                var t = Text;
+                                var unicode = "";
 
-                                Text = "";
+                                ReadChar();
 
-                                MoveChar();
+                                while (unicode.Length < 4 && "0123456789abcdefABCDEF".Contains(NextChar))
+                                {
+                                    KeepNext(ref unicode);
+                                }
 
-                                while (Text.Length < 4 && "0123456789abcdefABCDEF".Contains(NextChar))
-                                    AppendChar();
+                                text.Append(char.ConvertFromUtf32(int.Parse("0x" + unicode)));
+                                break;
 
-                                Text = t + char.ConvertFromUtf32(int.Parse("0x" + Text));
+                            default:
+                                KeepNext(text);
                                 break;
                         }
                     }
                     else
                     {
-                        AppendChar();
+                        KeepNext(text);
                     }
                 }
 
-                Match('"');
+                Match("\"");
 
-                return Text;
+                return text.ToString();
             }
             else if (NextChar == 't')
             {
-                Match('t');
-                Match('r');
-                Match('u');
-                Match('e');
-
+                Match("true");
                 return true;
             }
             else if (NextChar == 'f')
             {
-                Match('f');
-                Match('a');
-                Match('l');
-                Match('s');
-                Match('e');
-
+                Match("false");
                 return false;
             }
             else if (NextChar == 'n')
             {
-                Match('n');
-                Match('u');
-                Match('l');
-                Match('l');
-
+                Match("null");
                 return null;
             }
             else if ("-0123456789".Contains(NextChar))
             {
-                Text = "";
+                var number = "";
 
                 if (NextChar == '-')
-                    AppendChar();
+                    KeepNext(ref number);
 
                 if (NextChar == '0')
                 {
-                    AppendChar();
+                    KeepNext(ref number);
                 }
                 else if ("123456789".Contains(NextChar))
                 {
                     while ("0123456789".Contains(NextChar))
-                        AppendChar();
+                        KeepNext(ref number);
                 }
                 else
                     throw new FormatException("Digit expected!");
 
                 if (NextChar == '.')
                 {
-                    AppendChar();
+                    KeepNext(ref number);
 
                     while ("0123456789".Contains(NextChar))
-                        AppendChar();
+                        KeepNext(ref number);
                 }
 
                 if (NextChar == 'e' || NextChar == 'E')
                 {
-                    NextChar = 'e';
-                    AppendChar();
+                    KeepNext(ref number, 'e');
 
                     if (NextChar == '+' || NextChar == '-')
-                        AppendChar();
+                        KeepNext(ref number);
 
                     while ("0123456789".Contains(NextChar))
-                        AppendChar();
+                        KeepNext(ref number);
                 }
 
-                return double.Parse(Text, CultureInfo.InvariantCulture);
+                return double.Parse(number, CultureInfo.InvariantCulture);
             }
 
             return null;
         }
+
 
 
         /// <summary>

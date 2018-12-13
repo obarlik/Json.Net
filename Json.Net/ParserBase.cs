@@ -7,55 +7,61 @@ namespace Json.Net
 {
     public class ParserBase
     {
-        StreamReader TextStream;
+        TextReader Reader;        
+        protected int PeekChar;
 
-        protected string Text;
-        protected char NextChar;
-
-
-        public ParserBase(string text)
+        
+        public ParserBase(TextReader textReader)
         {
-            TextStream =
-                new StreamReader(
-                  new MemoryStream(
-                    Encoding.UTF8.GetBytes(text ?? "")));
+            Reader = textReader;
+            PeekChar = Reader.Peek();
+        }
+        
 
-            Text = "";
-            NextChar = (char)TextStream.Peek();
+        protected bool EndOfStream
+        {
+            get { return PeekChar == -1; }
+        }
+
+
+        protected char NextChar
+        {
+            get { return EndOfStream ? (char)27 : (char)PeekChar; }
         }
 
 
         protected char ReadChar()
         {
-            if (!TextStream.EndOfStream)
-                return (char)TextStream.Read();
+            if (!EndOfStream)
+            {
+                var r = (char)Reader.Read();
+                PeekChar = Reader.Peek();
+
+                return r;
+            }
 
             throw new FormatException("Unexpected end of string!");
         }
 
 
-        protected void MoveChar()
+        protected void KeepNext(ref string s, char? c = null)
         {
+            s += c ?? NextChar;
             ReadChar();
+        }
 
-            if (!TextStream.EndOfStream)
-                NextChar = (char)TextStream.Peek();
-            else
-                NextChar = char.MinValue;
+
+        protected void KeepNext(StringBuilder sb, char? c = null)
+        {
+            sb.Append(c ?? NextChar);
+            ReadChar();
         }
 
 
         protected void SkipWhite()
         {
             while (" \t\r\n".Contains(NextChar))
-                MoveChar();
-        }
-
-
-        protected void AppendChar()
-        {
-            Text += NextChar;
-            MoveChar();
+                ReadChar();
         }
 
 
@@ -65,22 +71,37 @@ namespace Json.Net
 
             if (NextChar == c)
             {
-                MoveChar();
+                ReadChar();
                 return true;
             }
 
             return false;
         }
 
-
-        protected void Match(char c)
+        
+        protected void Match(string s)
         {
             SkipWhite();
 
-            if (NextChar == c)
-                MoveChar();
-            else
-                throw new FormatException(c + " expected!");
+            foreach (var c in s)
+                if (NextChar == c)
+                    ReadChar();
+                else
+                    throw new FormatException(s + " expected!");
+        }
+
+
+        protected bool TryMatch(string s)
+        {
+            SkipWhite();
+
+            foreach (var c in s)
+                if (NextChar == c)
+                    ReadChar();
+                else
+                    return false;
+
+            return true;
         }
     }
 }

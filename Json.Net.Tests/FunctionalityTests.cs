@@ -18,13 +18,13 @@ namespace Json.Net.Tests
 
         class Pet
         {
-            public int id;
-            public string name;
-            public DateTime birth;
-            public bool alive;
-            public Gender gender;
-            public Dictionary<string, string> dictType;
-            public int[] intArray;
+            public int id { get; set; }
+            public string name { get; set; }
+            public DateTime birth { get; set; }
+            public bool alive { get; set; }
+            public Gender gender { get; set; }
+            public Dictionary<string, string> dictType { get; set; }
+            public int[] intArray { get; set; }
         }
 
 
@@ -40,13 +40,13 @@ namespace Json.Net.Tests
                 gender = Gender.Male,
                 dictType = new Dictionary<string, string>()
                 {
-                    {"Key1","Value1"},
-                    {"Key2","Value2"},
+                    {"Key1", "Value1"},
+                    {"Key2", "Value2"},
                 },
                 intArray = new[] { 1, 2, 3 }
             };
 
-            var petJson = JsonNet.Serialize(originalPet, true);
+            var petJson = JsonNet.Serialize(originalPet);
             var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 
             Debug.Assert(restoredPet.id == originalPet.id);
@@ -66,7 +66,6 @@ namespace Json.Net.Tests
 
             petJson = JsonNet.Serialize(
                 originalPet,
-                false,
                 dateConverter);
 
             restoredPet = JsonNet.Deserialize<Pet>(petJson);
