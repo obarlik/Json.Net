@@ -15,18 +15,17 @@ class Pet
 }
 ```
 
-### Serializing
+Serialization...
 ``` cs
 var petJson = JsonNet.Serialize(originalPet);
 ```
 
-### Deserializing
+Deserialization...
 ``` cs
 var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 ```            
 
-### Custom type converters
-You can define and use custom type converters to control serialization/deserialization.
+You can also define and use custom type converters to control serialization/deserialization.
 ``` cs
 var dateConverter = 
   new JsonConverter<DateTime>(
