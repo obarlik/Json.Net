@@ -20,27 +20,6 @@ class Pet
 var petJson = JsonNet.Serialize(originalPet);
 ```
 
-petJson's value:
-
-``` javascript
-{
-	"id" : 1,
-	"name" : "gucci",
-	"birth" : "12/12/2018 14:13:46",
-	"alive" : true,
-	"gender" : 1,
-	"dictType" : {
-		"Key1" : "Value1",
-		"Key2" : "Value2"
-	},
-	"intArray" : [
-		1,
-		2,
-		3
-	]
-}
-```
-
 ### Deserializing
 ``` cs
 var restoredPet = JsonNet.Deserialize<Pet>(petJson);
@@ -55,27 +34,6 @@ var dateConverter =
     s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
   
 var petJson = JsonNet.Serialize(originalPet, dateConverter);
-```
-
-petJson's value:
-
-``` javascript
-{
-	"id" : 1,
-	"name" : "gucci",
-	"birth" : "2018-12-12T14:13:46",
-	"alive" : true,
-	"gender" : 1,
-	"dictType" : {
-		"Key1" : "Value1",
-		"Key2" : "Value2"
-	},
-	"intArray" : [
-		1,
-		2,
-		3
-	]
-}
 ```
 
 ## Reference:
