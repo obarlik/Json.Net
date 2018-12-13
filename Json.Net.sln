@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Net", "Json.Net\Json.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Net.Tests", "Json.Net.Tests\Json.Net.Tests.csproj", "{C92CA987-7ABF-4433-9BEC-AB4AEF006141}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchMark", "ConsoleApp1\BenchMark.csproj", "{BA328146-93DB-476C-87D7-5D316C138C74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C92CA987-7ABF-4433-9BEC-AB4AEF006141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C92CA987-7ABF-4433-9BEC-AB4AEF006141}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C92CA987-7ABF-4433-9BEC-AB4AEF006141}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA328146-93DB-476C-87D7-5D316C138C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA328146-93DB-476C-87D7-5D316C138C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA328146-93DB-476C-87D7-5D316C138C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA328146-93DB-476C-87D7-5D316C138C74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

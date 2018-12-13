@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,60 +8,106 @@ namespace Json.Net
 {
     public class ParserBase
     {
-        TextReader Reader;        
-        protected int PeekChar;
-
+        TextReader Reader;    
         
         public ParserBase(TextReader textReader)
         {
             Reader = textReader;
-            PeekChar = Reader.Peek();
+            ReadChar();
         }
         
 
-        protected bool EndOfStream
+        protected char NextChar;
+
+        const char EOF = (char)27;
+
+        protected bool EndOfStream { get { return NextChar == EOF; } }
+
+        protected void ReadChar()
         {
-            get { return PeekChar == -1; }
-        }
-
-
-        protected char NextChar
-        {
-            get { return EndOfStream ? (char)27 : (char)PeekChar; }
-        }
-
-
-        protected char ReadChar()
-        {
-            if (!EndOfStream)
+            if (NextChar != EOF)
             {
-                var r = (char)Reader.Read();
-                PeekChar = Reader.Peek();
-
-                return r;
+                var r = Reader.Read();
+                NextChar = r == -1 ? EOF : (char)r;
             }
-
-            throw new FormatException("Unexpected end of string!");
         }
 
 
-        protected void KeepNext(ref string s, char? c = null)
+        protected void KeepNext(ref string s)
         {
-            s += c ?? NextChar;
+            s += NextChar;
             ReadChar();
         }
 
 
-        protected void KeepNext(StringBuilder sb, char? c = null)
+        protected void KeepChar(ref string s, char c)
         {
-            sb.Append(c ?? NextChar);
+            s += c;
             ReadChar();
+        }
+
+
+        protected void KeepNext(StringBuilder sb)
+        {
+            sb.Append(NextChar);
+            ReadChar();
+        }
+
+
+        protected void KeepChar(StringBuilder sb, char c)
+        {
+            sb.Append(c);
+            ReadChar();
+        }
+
+
+        protected static HashSet<char> WhiteSpace = new HashSet<char>(" \t\r\n");
+        protected static HashSet<char> Digits = new HashSet<char>("0123456789");
+        protected static HashSet<char> HexDigits = new HashSet<char>("0123456789ABCDEFabcdef");
+
+        protected static HashSet<char> Alpha = new HashSet<char>(
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "abcdefghijklmnopqrstuvwxyz");
+
+        protected static HashSet<char> AlphaNumeric = new HashSet<char>(
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                    "abcdefghijklmnopqrstuvwxyz" + 
+                    "0123456789");
+
+
+        protected bool IsWhite
+        {
+            get { return WhiteSpace.Contains(NextChar); }
+        }
+
+
+        protected bool IsAlpha
+        {
+            get { return Alpha.Contains(NextChar); }
+        }
+
+
+        protected bool IsAlphaNumeric
+        {
+            get { return AlphaNumeric.Contains(NextChar); }
+        }
+
+
+        protected bool IsDigit
+        {
+            get { return Digits.Contains(NextChar); }
+        }
+
+
+        protected bool IsHexDigit
+        {
+            get { return HexDigits.Contains(NextChar); }
         }
 
 
         protected void SkipWhite()
         {
-            while (" \t\r\n".Contains(NextChar))
+            while (IsWhite)
                 ReadChar();
         }
 

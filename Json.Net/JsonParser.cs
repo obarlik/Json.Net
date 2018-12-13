@@ -16,7 +16,7 @@ namespace Json.Net
     {
         IJsonConverter[] Converters;
 
-        readonly Dictionary<char, char> EscapeMap = 
+        static Dictionary<char, char> EscapeMap = 
             new Dictionary<char, char>()
             {
                 { 'b', (char)8 },
@@ -39,10 +39,12 @@ namespace Json.Net
             if (obj == null)
                 return null;
 
-            if (targetType == obj.GetType())
+            var objType = obj.GetType();
+
+            if (targetType == objType)
                 return obj;
 
-            if (targetType.IsAssignableFrom(obj.GetType()))
+            if (objType.IsSubclassOf(targetType))
                 return obj;
 
             if (obj is string)
@@ -60,9 +62,11 @@ namespace Json.Net
                         .Select(o => FromJsonType(o, et))
                         .ToArray();
 
-                var t = Array.CreateInstance(et, l.Length);
+                var t = Array.CreateInstance(et, ((IList)obj).Count);
 
-                Array.Copy(l, t, l.Length);
+                for (int i = 0; i < t.Length; i++)
+                    t.SetValue(((IList)obj)[i], i);
+                
                 return t;
             }
 
@@ -143,7 +147,7 @@ namespace Json.Net
 
             if (targetType.IsEnum)
             {
-                if (obj.GetType() == typeof(string))
+                if (objType == typeof(string))
                     return (int)Enum.Parse(targetType, (string)obj);
 
                 return (int)(double)obj;
@@ -221,17 +225,12 @@ namespace Json.Net
 
                 result = Activator.CreateInstance(
                             typeof(List<>).MakeGenericType(elementType));
-
+                
                 while (true)
                 {
                     var item = FromJson(elementType);
-
-                    if (type.HasElementType)
-                        item = FromJsonType(item, type.GetElementType());
-                    else if (type.IsGenericType)
-                        item = FromJsonType(item, type.GenericTypeArguments[0]);
-
-                    ((IList)result).Add(item);
+                    
+                    ((IList)result).Add(FromJsonType(item, elementType));
 
                     if (!TryMatch(','))
                         break;
@@ -258,7 +257,7 @@ namespace Json.Net
                             case 'n':
                             case 'f':
                             case 'r':
-                                KeepNext(text, EscapeMap[NextChar]);
+                                KeepChar(text, EscapeMap[NextChar]);
                                 break;
 
                             case 'u':
@@ -266,7 +265,7 @@ namespace Json.Net
 
                                 ReadChar();
 
-                                while (unicode.Length < 4 && "0123456789abcdefABCDEF".Contains(NextChar))
+                                while (unicode.Length < 4 && IsHexDigit)
                                 {
                                     KeepNext(ref unicode);
                                 }
@@ -304,7 +303,7 @@ namespace Json.Net
                 Match("null");
                 return null;
             }
-            else if ("-0123456789".Contains(NextChar))
+            else if (NextChar == '-' || IsDigit)
             {
                 var number = "";
 
@@ -315,9 +314,9 @@ namespace Json.Net
                 {
                     KeepNext(ref number);
                 }
-                else if ("123456789".Contains(NextChar))
+                else if (IsDigit)
                 {
-                    while ("0123456789".Contains(NextChar))
+                    while (IsDigit)
                         KeepNext(ref number);
                 }
                 else
@@ -327,13 +326,13 @@ namespace Json.Net
                 {
                     KeepNext(ref number);
 
-                    while ("0123456789".Contains(NextChar))
+                    while (IsDigit)
                         KeepNext(ref number);
                 }
 
                 if (NextChar == 'e' || NextChar == 'E')
                 {
-                    KeepNext(ref number, 'e');
+                    KeepChar(ref number, 'e');
 
                     if (NextChar == '+' || NextChar == '-')
                         KeepNext(ref number);

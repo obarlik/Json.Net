@@ -10,12 +10,12 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>Bug fixed: Deserialization of list types throws exception.</PackageReleaseNotes>
+    <PackageReleaseNotes>Performance optimizations.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.9</Version>
-    <AssemblyVersion>1.0.9.1</AssemblyVersion>
-    <FileVersion>1.0.9.1</FileVersion>
+    <Version>1.0.10</Version>
+    <AssemblyVersion>1.0.10.1</AssemblyVersion>
+    <FileVersion>1.0.10.1</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 

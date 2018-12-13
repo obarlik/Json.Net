@@ -10,7 +10,7 @@ namespace Json.Net
 {
     public class JsonSerializer
     {
-        public TextWriter Writer { get; }
+        TextWriter Writer;
 
         public JsonSerializer(TextWriter writer)
         {
