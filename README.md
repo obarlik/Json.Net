@@ -14,17 +14,17 @@ class Pet
   public string name;
 }
 ```
-
+***
 Serialization...
 ``` cs
 var petJson = JsonNet.Serialize(originalPet);
 ```
-
+***
 Deserialization...
 ``` cs
 var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 ```            
-
+***
 You can also define and use custom type converters to control serialization/deserialization.
 ``` cs
 var dateConverter = 
