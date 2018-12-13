@@ -28,58 +28,68 @@ namespace Json.Net.Tests
         }
 
 
-        [TestMethod]
-        public void BasicFunctionalityTest()
+        string OriginalPetJson =
+            "{\"id\":1,\"name\":\"gucci\",\"birth\":\"08/30/2012 13:41:59\","
+          + "\"alive\":true,\"gender\":1,\"dictType\":{\"Key1\":\"Value1\","
+          + "\"Key2\":\"Value2\"},\"intArray\":[1,2,3]}";
+
+        Pet OriginalPet = new Pet()
         {
-            var originalPet = new Pet()
-            {
-                id = 1,
-                name = "gucci",
-                birth = DateTime.Now,
-                alive = true,
-                gender = Gender.Male,
-                dictType = new Dictionary<string, string>()
+            id = 1,
+            name = "gucci",
+            birth = new DateTime(2012, 8, 30, 13, 41, 59),
+            alive = true,
+            gender = Gender.Male,
+            dictType = new Dictionary<string, string>()
                 {
                     {"Key1", "Value1"},
                     {"Key2", "Value2"},
                 },
-                intArray = new[] { 1, 2, 3 }
-            };
+            intArray = new[] { 1, 2, 3 }
+        };
 
-            var petJson = JsonNet.Serialize(originalPet);
+
+        [TestMethod]
+        public void SerializationTest()
+        {
+            var petJson = JsonNet.Serialize(OriginalPet);
+
+            Assert.AreEqual(petJson, OriginalPetJson);
+        }
+
+
+        [TestMethod]
+        public void DeserializationTest()
+        {
+            var restoredPet = JsonNet.Deserialize<Pet>(OriginalPetJson);
+            
+            Assert.AreEqual(restoredPet.id, OriginalPet.id);
+            Assert.AreEqual(restoredPet.name, OriginalPet.name);
+            Assert.AreEqual(restoredPet.gender, OriginalPet.gender);
+            Assert.AreEqual(restoredPet.alive, OriginalPet.alive);
+            Assert.AreEqual(restoredPet.birth.ToString(), OriginalPet.birth.ToString());
+            Assert.AreEqual(restoredPet.dictType["Key1"], OriginalPet.dictType["Key1"]);
+            Assert.AreEqual(restoredPet.dictType["Key2"], OriginalPet.dictType["Key2"]);
+            Assert.AreEqual(restoredPet.intArray[0], OriginalPet.intArray[0]);
+            Assert.AreEqual(restoredPet.intArray[1], OriginalPet.intArray[1]);
+            Assert.AreEqual(restoredPet.intArray[2], OriginalPet.intArray[2]);
+        }
+
+
+        JsonConverter<DateTime>  DateConverter = 
+            new JsonConverter<DateTime>(
+                dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
+                s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
+
+
+        [TestMethod]
+        public void ConverterTest()
+        {
+            var petJson = JsonNet.Serialize(OriginalPet, DateConverter);
+
             var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 
-            Debug.Assert(restoredPet.id == originalPet.id);
-            Debug.Assert(restoredPet.name == originalPet.name);
-            Debug.Assert(restoredPet.gender == originalPet.gender);
-            Debug.Assert(restoredPet.alive == originalPet.alive);
-            Debug.Assert(restoredPet.birth.ToString() == originalPet.birth.ToString());
-            Debug.Assert(restoredPet.dictType["Key1"] == originalPet.dictType["Key1"]);
-            Debug.Assert(restoredPet.dictType["Key2"] == originalPet.dictType["Key2"]);
-            Debug.Assert(restoredPet.intArray[0] == originalPet.intArray[0]);
-            Debug.Assert(restoredPet.intArray[1] == originalPet.intArray[1]);
-            Debug.Assert(restoredPet.intArray[2] == originalPet.intArray[2]);
-
-            var dateConverter = new JsonConverter<DateTime>(
-                    dt => dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
-                    s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
-
-            petJson = JsonNet.Serialize(
-                originalPet,
-                dateConverter);
-
-            restoredPet = JsonNet.Deserialize<Pet>(petJson);
-
-            Debug.Assert(restoredPet.id == originalPet.id);
-            Debug.Assert(restoredPet.name == originalPet.name);
-            Debug.Assert(restoredPet.gender == originalPet.gender);
-            Debug.Assert(restoredPet.alive == originalPet.alive);
-            Debug.Assert(restoredPet.birth.ToString() == originalPet.birth.ToString());
-            Debug.Assert(restoredPet.dictType["Key1"] == originalPet.dictType["Key1"]);
-            Debug.Assert(restoredPet.dictType["Key2"] == originalPet.dictType["Key2"]);
-            Debug.Assert(restoredPet.intArray[0] == originalPet.intArray[0]);
-            Debug.Assert(restoredPet.intArray[1] == originalPet.intArray[1]);
-            Debug.Assert(restoredPet.intArray[2] == originalPet.intArray[2]);
+            Debug.Assert(restoredPet.birth.ToString() == OriginalPet.birth.ToString());
         }
     }
 }
