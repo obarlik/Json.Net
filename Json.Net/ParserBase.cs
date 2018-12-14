@@ -19,6 +19,8 @@ namespace Json.Net
         {
             Reader = textReader;
             EndOfStream = false;
+            BufferIndex = -1;
+            BufferSize = 0;
             ReadNext();
             return this;
         }
@@ -30,21 +32,29 @@ namespace Json.Net
 
         protected bool EndOfStream;
 
+        char[] Buffer = new char[1024];
+        int BufferIndex;
+        int BufferSize;
+
         protected void ReadNext()
         {
             if (EndOfStream)
                 return;
 
-            var r = Reader.Read();
-
-            if (r == -1)
+            if (++BufferIndex >= BufferSize)
             {
-                NextChar = EOF;
-                EndOfStream = true;
-                return;
+                BufferSize = Reader.ReadBlock(Buffer, 0, Buffer.Length);
+                BufferIndex = 0;
+
+                if (BufferSize == 0)
+                {
+                    EndOfStream = true;
+                    NextChar = EOF;
+                    return;
+                }
             }
 
-            NextChar = (char)r;
+            NextChar = Buffer[BufferIndex];
         }
 
 
