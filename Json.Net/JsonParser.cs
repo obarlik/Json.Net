@@ -27,17 +27,39 @@ namespace Json.Net
             };
 
 
-        public JsonParser(TextReader jsonReader, params IJsonConverter[] converters)
-            : base(jsonReader)
+        public JsonParser()
         {
+        }
+
+
+        [ThreadStatic]
+        static JsonParser _Instance;
+
+        public static JsonParser Instance
+        {
+            get
+            {
+                return _Instance ??
+                      (_Instance = new JsonParser());
+            }
+        }
+
+
+        public virtual JsonParser Initialize(TextReader jsonReader, params IJsonConverter[] converters)
+        {
+            base.Initialize(jsonReader);
             Converters = converters;
+            return this;
         }
         
 
         object FromJsonType(object obj, Type targetType)
         {
             if (obj == null)
-                return null;
+                if (targetType.IsValueType)
+                    return Activator.CreateInstance(targetType);
+                else
+                    return null;
 
             var objType = obj.GetType();
 
@@ -57,11 +79,7 @@ namespace Json.Net
 
             if (targetType.IsArray)
             {
-                var et = targetType.GetElementType();
-                var l = ((IList)obj).Cast<object>()
-                        .Select(o => FromJsonType(o, et))
-                        .ToArray();
-
+                var et = targetType.GetElementType();                
                 var t = Array.CreateInstance(et, ((IList)obj).Count);
 
                 for (int i = 0; i < t.Length; i++)
@@ -147,28 +165,31 @@ namespace Json.Net
 
             if (targetType.IsEnum)
             {
+                if (obj is int)
+                    return obj;
+
                 if (objType == typeof(string))
                     return (int)Enum.Parse(targetType, (string)obj);
-
+                
                 return (int)(double)obj;
             }
 
             throw new FormatException("Unknown field type " + targetType.Name);
         }
+        
 
-
+        StringBuilder text = new StringBuilder();
+        
         public object FromJson(Type type)
         {
-            if (type == null)
-                type = typeof(object);
+            object result;
 
-            if (type.IsAbstract)
-                throw new InvalidOperationException("Abstract types not supported!");
+            SkipWhite();
 
-            object result = null;
-
-            if (TryMatch('{'))
+            if (NextChar == '{')
             {
+                ReadNext();
+
                 if (type.IsValueType)
                     throw new FormatException("Unexpected type!");
 
@@ -186,6 +207,7 @@ namespace Json.Net
                 {
                     var name = (string)FromJson(nameType);
 
+                    SkipWhite();
                     Match(":");
 
                     var map = SerializerMap.GetSerializerMap(type);
@@ -194,8 +216,6 @@ namespace Json.Net
                     var fieldType = field == null ? valueType : field.ValueType;
 
                     var value = FromJson(fieldType);
-
-                    value = FromJsonType(value, fieldType);
 
                     if (field != null)
                     {
@@ -206,16 +226,21 @@ namespace Json.Net
                         ((IDictionary)result).Add(name, value);
                     }
 
-                    if (!TryMatch(','))
+                    SkipWhite();
+
+                    if (NextChar != ',')
                         break;
+
+                    ReadNext();
                 }
 
+                SkipWhite();
                 Match("}");
-
-                return result;
             }
-            else if (TryMatch('['))
+            else if (NextChar == '[')
             {
+                ReadNext();
+
                 var elementType =
                     type.IsArray ?
                         type.GetElementType() :
@@ -225,30 +250,33 @@ namespace Json.Net
 
                 result = Activator.CreateInstance(
                             typeof(List<>).MakeGenericType(elementType));
-                
+
                 while (true)
                 {
                     var item = FromJson(elementType);
-                    
-                    ((IList)result).Add(FromJsonType(item, elementType));
 
-                    if (!TryMatch(','))
+                    ((IList)result).Add(item);
+
+                    SkipWhite();
+
+                    if (NextChar != ',')
                         break;
+
+                    ReadNext();
                 }
-
-                Match("]");
                 
-                return FromJsonType(result, type);
+                SkipWhite();
+                Match("]");
             }
-            else if (TryMatch('"'))
+            else if (NextChar == '"')
             {
-                var text = new StringBuilder();
+                ReadNext();
 
-                while (NextChar != '"')
+                while (!EndOfStream && NextChar != '"')
                 {
                     if (NextChar == '\\')
                     {
-                        ReadChar();
+                        ReadNext();
 
                         switch (NextChar)
                         {
@@ -257,94 +285,119 @@ namespace Json.Net
                             case 'n':
                             case 'f':
                             case 'r':
-                                KeepChar(text, EscapeMap[NextChar]);
+                                text.Append(EscapeMap[NextChar]);
                                 break;
 
                             case 'u':
-                                var unicode = "";
+                                ReadNext();
 
-                                ReadChar();
+                                var unicode = "";
 
                                 while (unicode.Length < 4 && IsHexDigit)
                                 {
-                                    KeepNext(ref unicode);
+                                    unicode += NextChar;
+                                    ReadNext();
                                 }
 
                                 text.Append(char.ConvertFromUtf32(int.Parse("0x" + unicode)));
-                                break;
+                                continue;
 
                             default:
-                                KeepNext(text);
+                                text.Append(NextChar);
                                 break;
                         }
                     }
                     else
-                    {
-                        KeepNext(text);
-                    }
-                }
+                        text.Append(NextChar);
 
+                    ReadNext();
+                }
+                
+                SkipWhite();
                 Match("\"");
 
-                return text.ToString();
+                result = text.ToString();
+
+                text.Clear();
             }
             else if (NextChar == 't')
             {
                 Match("true");
-                return true;
+                result = true;
             }
             else if (NextChar == 'f')
             {
                 Match("false");
-                return false;
+                result = false;
             }
             else if (NextChar == 'n')
             {
                 Match("null");
-                return null;
+                result = null;
             }
             else if (NextChar == '-' || IsDigit)
             {
-                var number = "";
-
                 if (NextChar == '-')
-                    KeepNext(ref number);
+                {
+                    text.Append('-');
+                    ReadNext();
+                }
 
                 if (NextChar == '0')
                 {
-                    KeepNext(ref number);
+                    text.Append('0');
+                    ReadNext();
                 }
                 else if (IsDigit)
                 {
-                    while (IsDigit)
-                        KeepNext(ref number);
+                    do
+                    {
+                        text.Append(NextChar);
+                        ReadNext();
+                    }
+                    while (IsDigit);
                 }
                 else
                     throw new FormatException("Digit expected!");
 
                 if (NextChar == '.')
                 {
-                    KeepNext(ref number);
+                    text.Append('.');
+                    ReadNext();
 
                     while (IsDigit)
-                        KeepNext(ref number);
+                    {
+                        text.Append(NextChar);
+                        ReadNext();
+                    }
                 }
 
                 if (NextChar == 'e' || NextChar == 'E')
                 {
-                    KeepChar(ref number, 'e');
+                    text.Append('e');
+                    ReadNext();
 
                     if (NextChar == '+' || NextChar == '-')
-                        KeepNext(ref number);
+                    {
+                        text.Append(NextChar);
+                        ReadNext();
+                    }
 
-                    while ("0123456789".Contains(NextChar))
-                        KeepNext(ref number);
+                    while (IsDigit)
+                    {
+                        text.Append(NextChar);
+                        ReadNext();
+                    }
                 }
 
-                return double.Parse(number, CultureInfo.InvariantCulture);
-            }
+                result = double.Parse(text.ToString(), CultureInfo.InvariantCulture);
 
-            return null;
+                text.Clear();
+            }
+            else
+                throw new FormatException("Unexpected character! " + NextChar);
+
+            return FromJsonType(result, type);
         }
 
 

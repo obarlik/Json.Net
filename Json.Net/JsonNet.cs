@@ -23,7 +23,7 @@ namespace Json.Net
         /// <returns></returns>
         public static T Deserialize<T>(string json, params IJsonConverter[] converters)
         {
-            return (T)new JsonParser(new StringReader(json), converters)
+            return (T)JsonParser.Instance.Initialize(new StringReader(json), converters)
                    .FromJson(typeof(T));
         }
 
@@ -37,7 +37,7 @@ namespace Json.Net
         /// <returns></returns>
         public static T Deserialize<T>(Stream stream, params IJsonConverter[] converters)
         {
-            return (T)new JsonParser(new StreamReader(stream), converters)
+            return (T)JsonParser.Instance.Initialize(new StreamReader(stream), converters)
                    .FromJson(typeof(T));
         }
 
@@ -51,7 +51,7 @@ namespace Json.Net
         /// <returns></returns>
         public static T Deserialize<T>(TextReader reader, params IJsonConverter[] converters)
         {
-            return (T)new JsonParser(reader, converters)
+            return (T)JsonParser.Instance.Initialize(reader, converters)
                    .FromJson(typeof(T));
         }
 
@@ -66,7 +66,8 @@ namespace Json.Net
         {
             var sw = new StringWriter();
 
-            new JsonSerializer(sw).Serialize(obj, converters);
+            JsonSerializer.Instance.Initialize(sw)
+            .Serialize(obj, converters);
             
             return sw.ToString();
         }
@@ -82,7 +83,9 @@ namespace Json.Net
         {
             using (var sw = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             {
-                new JsonSerializer(sw).Serialize(obj, converters);
+                JsonSerializer.Instance.Initialize(sw)
+                .Serialize(obj, converters);
+
                 sw.Flush();
             }
         }
@@ -97,7 +100,9 @@ namespace Json.Net
         /// <returns></returns>
         public static void Serialize(object obj, TextWriter writer, params IJsonConverter[] converters)
         {
-            new JsonSerializer(writer).Serialize(obj, converters);
+            JsonSerializer.Instance.Initialize(writer)
+            .Serialize(obj, converters);
+
             writer.Flush();
         }
 

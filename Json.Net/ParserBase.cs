@@ -10,145 +10,102 @@ namespace Json.Net
     {
         TextReader Reader;    
         
-        public ParserBase(TextReader textReader)
+        public ParserBase()
+        {
+        }
+
+
+        public virtual ParserBase Initialize(TextReader textReader)
         {
             Reader = textReader;
-            ReadChar();
+            EndOfStream = false;
+            ReadNext();
+            return this;
         }
-        
+
 
         protected char NextChar;
 
         const char EOF = (char)27;
 
-        protected bool EndOfStream { get { return NextChar == EOF; } }
+        protected bool EndOfStream;
 
-        protected void ReadChar()
+        protected void ReadNext()
         {
-            if (NextChar != EOF)
+            if (EndOfStream)
+                return;
+
+            var r = Reader.Read();
+
+            if (r == -1)
             {
-                var r = Reader.Read();
-                NextChar = r == -1 ? EOF : (char)r;
+                NextChar = EOF;
+                EndOfStream = true;
+                return;
             }
+
+            NextChar = (char)r;
         }
 
 
-        protected void KeepNext(ref string s)
-        {
-            s += NextChar;
-            ReadChar();
-        }
+        protected static string WhiteSpace = " \t\r\n";
+        protected static string Digits = "0123456789";
+        protected static string HexDigits = "0123456789ABCDEFabcdef";
 
-
-        protected void KeepChar(ref string s, char c)
-        {
-            s += c;
-            ReadChar();
-        }
-
-
-        protected void KeepNext(StringBuilder sb)
-        {
-            sb.Append(NextChar);
-            ReadChar();
-        }
-
-
-        protected void KeepChar(StringBuilder sb, char c)
-        {
-            sb.Append(c);
-            ReadChar();
-        }
-
-
-        protected static HashSet<char> WhiteSpace = new HashSet<char>(" \t\r\n");
-        protected static HashSet<char> Digits = new HashSet<char>("0123456789");
-        protected static HashSet<char> HexDigits = new HashSet<char>("0123456789ABCDEFabcdef");
-
-        protected static HashSet<char> Alpha = new HashSet<char>(
+        protected static string Alpha = 
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "abcdefghijklmnopqrstuvwxyz");
+            "abcdefghijklmnopqrstuvwxyz";
 
-        protected static HashSet<char> AlphaNumeric = new HashSet<char>(
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                    "abcdefghijklmnopqrstuvwxyz" + 
-                    "0123456789");
+        protected static string AlphaNumeric = 
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "abcdefghijklmnopqrstuvwxyz" + 
+            "0123456789";
 
 
         protected bool IsWhite
         {
-            get { return WhiteSpace.Contains(NextChar); }
+            get { return WhiteSpace.IndexOf(NextChar) >= 0; }
         }
 
 
         protected bool IsAlpha
         {
-            get { return Alpha.Contains(NextChar); }
+            get { return Alpha.IndexOf(NextChar) >= 0; }
         }
 
 
         protected bool IsAlphaNumeric
         {
-            get { return AlphaNumeric.Contains(NextChar); }
+            get { return AlphaNumeric.IndexOf(NextChar) >= 0; }
         }
 
 
         protected bool IsDigit
         {
-            get { return Digits.Contains(NextChar); }
+            get { return Digits.IndexOf(NextChar) >= 0; }
         }
 
 
         protected bool IsHexDigit
         {
-            get { return HexDigits.Contains(NextChar); }
+            get { return HexDigits.IndexOf(NextChar) >= 0; }
         }
 
 
         protected void SkipWhite()
         {
             while (IsWhite)
-                ReadChar();
+                ReadNext();
         }
-
-
-        protected bool TryMatch(char c)
-        {
-            SkipWhite();
-
-            if (NextChar == c)
-            {
-                ReadChar();
-                return true;
-            }
-
-            return false;
-        }
-
+        
         
         protected void Match(string s)
         {
-            SkipWhite();
-
             foreach (var c in s)
                 if (NextChar == c)
-                    ReadChar();
+                    ReadNext();
                 else
                     throw new FormatException(s + " expected!");
-        }
-
-
-        protected bool TryMatch(string s)
-        {
-            SkipWhite();
-
-            foreach (var c in s)
-                if (NextChar == c)
-                    ReadChar();
-                else
-                    return false;
-
-            return true;
         }
     }
 }

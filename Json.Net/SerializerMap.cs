@@ -20,7 +20,18 @@ namespace Json.Net
         public readonly Type ObjectType;
         public readonly MemberAccessor[] Members;
 
-        static Dictionary<Type, SerializerMap> GlobalMaps = new Dictionary<Type, SerializerMap>();
+        [ThreadStatic]
+        static SerializerMap[] _GlobalMaps;
+
+        static SerializerMap[] GlobalMaps
+        {
+            get
+            {
+                return _GlobalMaps ??
+                      (_GlobalMaps = new SerializerMap[0]);
+            }
+        }
+    
 
         public SerializerMap(Type type)
         {
@@ -48,20 +59,27 @@ namespace Json.Net
                     })
                 .ToArray();
         }
-
+        
 
         public static SerializerMap GetSerializerMap(Type type)
         {
-            if (!GlobalMaps.TryGetValue(type, out SerializerMap result))
-                lock (GlobalMaps)
+            SerializerMap result;
+
+            if ((result = GlobalMaps.FirstOrDefault(m => m.ObjectType == type)) == null)
+                lock (_GlobalMaps)
                 {
-                    if (!GlobalMaps.TryGetValue(type, out result))
+                    if ((result = _GlobalMaps.FirstOrDefault(m => m.ObjectType == type)) == null)
                     {
-                        GlobalMaps[type] = result = new SerializerMap(type);
+                        var l = _GlobalMaps.Length;
+                        Array.Resize(ref _GlobalMaps, l + 1);
+
+                        _GlobalMaps[l] = result = new SerializerMap(type);
 
                         foreach (var t in result.Members
                                           .Select(v => v.ValueType)
-                                          .Except(GlobalMaps.Keys)
+                                          .Where(t => t != typeof(string) 
+                                                   && (t.IsClass || (t.IsValueType && !t.IsPrimitive)))
+                                          .Except(GlobalMaps.Select(m => m.ObjectType))
                                           .Distinct())
                         {
                             GetSerializerMap(t);

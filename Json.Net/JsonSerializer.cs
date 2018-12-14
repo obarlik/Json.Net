@@ -12,9 +12,27 @@ namespace Json.Net
     {
         TextWriter Writer;
 
-        public JsonSerializer(TextWriter writer)
+        public JsonSerializer()
+        { }
+
+
+        public JsonSerializer Initialize(TextWriter writer)
         {
             Writer = writer;
+
+            return this;
+        }
+
+
+        [ThreadStatic]
+        static JsonSerializer _Instance;
+
+        public static JsonSerializer Instance
+        {
+            get {
+                return _Instance ??
+                      (_Instance = new JsonSerializer());
+            }
         }
 
 

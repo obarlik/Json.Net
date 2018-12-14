@@ -5,83 +5,159 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using Json.Net;
-
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace BenchMark
 {
 
+    [DataContract]
     public class Employee
     {
+        [DataMember]
         public int id { get; set; }
+
+        [DataMember]
         public string Name { get; set; }
+
+        [DataMember]
         public string Email { get; set; }
+
+        [DataMember]
         public string Dept { get; set; }
 
     }
     class Program
     {
+        
+        class BenchSet
+        {
+            public string Name;
 
+            public Func<List<Employee>, string> Serialize;
+            public double SerializeTime;
+            
+            public Func<string, List<Employee>> Deserialize;
+            public double DeserializeTime;
+        }
+
+
+        static DataContractJsonSerializer MsSerializer = new DataContractJsonSerializer(typeof(List<Employee>));
+        static MemoryStream MsSerializerBuffer = new MemoryStream();
+
+
+        static BenchSet[] Benchmarks =
+            new BenchSet[]
+            {                
+                new BenchSet {
+                    Name = "Jil",
+                    Serialize = emp => Jil.JSON.Serialize(emp),
+                    Deserialize = json => Jil.JSON.Deserialize<List<Employee>>(json)
+                },
+
+                new BenchSet
+                {
+                    Name = "Microsoft",
+
+                    Serialize = emp => {
+                        var ms = new MemoryStream();
+                        MsSerializer.WriteObject(ms, emp);
+                        return Encoding.Default.GetString(ms.ToArray());
+                    },
+
+                    Deserialize= json =>
+                    {
+                        var ms = new MemoryStream(Encoding.Default.GetBytes(json));
+                        return (List<Employee>)MsSerializer.ReadObject(ms);
+                    }
+                },
+ 
+                new BenchSet {
+                    Name = "Newtonsoft.Json",
+                    Serialize = emp => Newtonsoft.Json.JsonConvert.SerializeObject(emp),
+                    Deserialize = json => Newtonsoft.Json.JsonConvert.DeserializeObject<List<Employee>>(json)
+                },
+                
+                new BenchSet {
+                    Name = "Json.Net",
+                    Serialize = emp => Json.Net.JsonNet.Serialize(emp),
+                    Deserialize = json => Json.Net.JsonNet.Deserialize<List<Employee>>(json)
+                },
+
+            };
 
 
         static void Main(string[] args)
         {
-            List<Employee> liemp = new List<Employee>();
-            Employee emp = new Employee();
+            var iterCount = 10000;
 
+            if (args.Count() > 0)
+                int.TryParse(args[0], out iterCount);
 
-            liemp.Add(new Employee { id = 2, Name = "Debendra", Email = "debendra256@gmail.com", Dept = "IT" });
-            liemp.Add(new Employee { id = 3, Name = "Manoj", Email = "ManojMass@gmail.com", Dept = "Sales" });
-            liemp.Add(new Employee { id = 6, Name = "Kumar", Email = "Kumar256@gmail.com", Dept = "IT" });
+            Console.WriteLine(
+                "\r\n" +
+                "Benchmarking {0} iterations...",
+                iterCount);
 
-            var jsonData1 = "";
-            var iterCount = 100000;
-
-            var times = MeasureAction(() =>
+           
+            var results = Benchmarks
+            .Select(bench =>
             {
-                jsonData1 = SerializeEmployee(liemp);
+                List<Employee> liemp = new List<Employee>();
+                Employee emp = new Employee();
+
+                liemp.Add(new Employee { id = 2, Name = "Debendra", Email = "debendra256@gmail.com", Dept = "IT" });
+                liemp.Add(new Employee { id = 3, Name = "Manoj", Email = "ManojMass@gmail.com", Dept = "Sales" });
+                liemp.Add(new Employee { id = 6, Name = "Kumar", Email = "Kumar256@gmail.com", Dept = "IT" });
+
+                var jsonData1 = "";
+
+                var times = MeasureAction(() =>
+                {
+                    jsonData1 = bench.Serialize(liemp);
+                })
+                .Take(iterCount)
+                .ToArray();
+
+                bench.SerializeTime = times.Min(t => t.TotalMilliseconds) * 1000;
+
+                List<Employee> employeeDeserialized = null;
+
+                times = MeasureAction(() =>
+                {
+                    employeeDeserialized = bench.Deserialize(jsonData1);
+                })
+                .Take(iterCount)
+                .ToArray();
+
+                bench.DeserializeTime = times.Min(t => t.TotalMilliseconds) * 1000;
+
+                return bench;
             })
-            .Take(iterCount)
+            .OrderBy(b => Math.Sqrt(Math.Pow(b.SerializeTime, 2) + Math.Pow(b.DeserializeTime, 2)))
             .ToArray();
 
-            Console.WriteLine("............Json.Net Serialization........");
-            Console.WriteLine("Serialization time : {0}ms", times.Min(t => t.TotalMilliseconds));
-            Console.WriteLine(jsonData1);
+            Console.Write(
+                "\r\n" +
+                "{0,-20} {1,20}   {2,20}  ", "Library", "Serialization", "Deserialization");
 
-            List<Employee> employeeDeserialized = null;
-
-            times = MeasureAction(() =>
+            foreach(var bench in results)
             {
-                employeeDeserialized = DeserializeEmployee(jsonData1);
-            })
-            .Take(iterCount)
-            .ToArray();
+                Console.Write(
+                    "\r\n" +
+                    "{0,20} ", bench.Name);
 
-            Console.WriteLine("............Json.Net Deserialization........");
-            Console.WriteLine("Deserialization time : {0}ms", times.Min(t => t.TotalMilliseconds));
-            foreach (var data in employeeDeserialized)
-            {
-                Console.WriteLine("Id=" + data.id);
-                Console.WriteLine("Name=" + data.Name);
-                Console.WriteLine("Id=" + data.Email);
-                Console.WriteLine("Id=" + data.Dept);
+                Console.Write(
+                    "{0,20}µs ",
+                    bench.SerializeTime.ToString("0.00"));
+
+                Console.Write("{0,20}µs", bench.DeserializeTime.ToString("0.00"));
             }
 
-
+            Console.WriteLine();
             Console.ReadLine();
-
         }
-
-        private static string SerializeEmployee(List<Employee> liemployee)
-        {
-            return JsonNet.Serialize(liemployee);
-        }
-
-        private static List<Employee> DeserializeEmployee(string liemployee)
-        {
-            return JsonNet.Deserialize<List<Employee>>(liemployee);
-        }
-
+        
 
         static IEnumerable<TimeSpan> MeasureAction(Action action)
         {
