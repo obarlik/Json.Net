@@ -35,26 +35,30 @@ namespace BenchMark
             liemp.Add(new Employee { id = 6, Name = "Kumar", Email = "Kumar256@gmail.com", Dept = "IT" });
 
             var jsonData1 = "";
+            var iterCount = 100000;
 
-            var time = MeasureAction(() =>
+            var times = MeasureAction(() =>
             {
                 jsonData1 = SerializeEmployee(liemp);
-            });
-
+            })
+            .Take(iterCount)
+            .ToArray();
 
             Console.WriteLine("............Json.Net Serialization........");
-            Console.WriteLine("Average serialization time : {0}ms", time.TotalMilliseconds);
+            Console.WriteLine("Serialization time : {0}ms", times.Min(t => t.TotalMilliseconds));
             Console.WriteLine(jsonData1);
 
             List<Employee> employeeDeserialized = null;
 
-            time = MeasureAction(() =>
+            times = MeasureAction(() =>
             {
                 employeeDeserialized = DeserializeEmployee(jsonData1);
-            });
+            })
+            .Take(iterCount)
+            .ToArray();
 
             Console.WriteLine("............Json.Net Deserialization........");
-            Console.WriteLine("Average deserialization time : {0}ms", time.TotalMilliseconds);
+            Console.WriteLine("Deserialization time : {0}ms", times.Min(t => t.TotalMilliseconds));
             foreach (var data in employeeDeserialized)
             {
                 Console.WriteLine("Id=" + data.id);
@@ -79,14 +83,14 @@ namespace BenchMark
         }
 
 
-        static TimeSpan MeasureAction(Action action, int iter = 1000000)
+        static IEnumerable<TimeSpan> MeasureAction(Action action)
         {
-            var start = DateTime.UtcNow;
-
-            for (var i = 0; i < iter; i++)
+            while (true)
+            {
+                var start = DateTime.UtcNow;
                 action();
-
-            return (DateTime.UtcNow - start) / iter;
+                yield return DateTime.UtcNow - start;
+            }
         }
     }
 }
