@@ -45,7 +45,15 @@ namespace Json.Net
         }
 
 
-        public virtual JsonParser Initialize(TextReader jsonReader, params IJsonConverter[] converters)
+        public JsonParser Initialize(string json, IJsonConverter[] converters)
+        {
+            base.Initialize(json);
+            Converters = converters;
+            return this;
+        }
+
+
+        public JsonParser Initialize(TextReader jsonReader, params IJsonConverter[] converters)
         {
             base.Initialize(jsonReader);
             Converters = converters;

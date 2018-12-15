@@ -11,15 +11,28 @@ namespace Json.Net
     public class JsonSerializer
     {
         TextWriter Writer;
+        public StringBuilder Builder = new StringBuilder();
+
+        protected Action<string> Write;
 
         public JsonSerializer()
         { }
+
+        
+
+        public JsonSerializer Initialize()
+        {
+            Writer = null;
+            Builder.Clear();
+            Write = s => Builder.Append(s);
+            return this;
+        }
 
 
         public JsonSerializer Initialize(TextWriter writer)
         {
             Writer = writer;
-
+            Write = s => Writer.Write(s);
             return this;
         }
 
@@ -42,19 +55,19 @@ namespace Json.Net
 
             if (obj == null)
             {
-                Writer.Write("null");
+                Write("null");
                 return;
             }
 
             if (obj is bool || obj is bool?)
             {
-                Writer.Write(((bool)obj) ? "true" : "false");
+                Write(((bool)obj) ? "true" : "false");
                 return;
             }
 
             if (obj is string)
             {
-                Writer.Write(string.Format("\"{0}\"", obj));
+                Write(string.Format("\"{0}\"", obj));
                 return;
             }
 
@@ -71,26 +84,26 @@ namespace Json.Net
              || obj is ushort || obj is ushort?
              || obj is ulong || obj is ulong?)
             {
-                Writer.Write(string.Format(CultureInfo.InvariantCulture, "{0}", obj));
+                Write(string.Format(CultureInfo.InvariantCulture, "{0}", obj));
                 return;
             }
 
 
             if (obj is IEnumerable)
             {
-                Writer.Write(obj is IDictionary ? '{' : '[');
+                Write(obj is IDictionary ? "{" : "[");
 
                 var i = 0;
 
                 foreach (var o in (IEnumerable)obj)
                 {
                     if (++i > 1)
-                        Writer.Write(',');
+                        Write(",");
 
                     Serialize(o, converters);
                 }
 
-                Writer.Write(obj is IDictionary ? '}' : ']');
+                Write(obj is IDictionary ? "}" : "]");
                 return;
             }
 
@@ -124,7 +137,7 @@ namespace Json.Net
                     var v = kvt.GetProperty("Value").GetValue(obj);
 
                     Serialize(k.ToString());
-                    Writer.Write(':');
+                    Write(":");
                     Serialize(v, converters);
 
                     return;
@@ -133,7 +146,7 @@ namespace Json.Net
 
             if (!objectType.IsPrimitive)
             {
-                Writer.Write('{');
+                Write("{");
 
                 var i = 0;
 
@@ -141,23 +154,23 @@ namespace Json.Net
                                  .Members)
                 {
                     if (++i > 1)
-                        Writer.Write(',');
+                        Write(",");
 
                     if (objectType == typeof(DictionaryEntry))
                     {
                         Serialize(((DictionaryEntry)obj).Key.ToString());
-                        Writer.Write(':');
+                        Write(":");
                         Serialize(((DictionaryEntry)obj).Value, converters);
                     }
                     else
                     {
                         Serialize(m.Name);
-                        Writer.Write(':');
+                        Write(":");
                         Serialize(m.GetValue(obj), converters);
                     }
                 }
 
-                Writer.Write('}');
+                Write("}");
                 return;
             }
 

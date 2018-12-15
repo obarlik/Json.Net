@@ -23,7 +23,7 @@ namespace Json.Net
         /// <returns></returns>
         public static T Deserialize<T>(string json, params IJsonConverter[] converters)
         {
-            return (T)JsonParser.Instance.Initialize(new StringReader(json), converters)
+            return (T)JsonParser.Instance.Initialize(json, converters)
                    .FromJson(typeof(T));
         }
 
@@ -64,13 +64,13 @@ namespace Json.Net
         /// <returns></returns>
         public static string Serialize(object obj, params IJsonConverter[] converters)
         {
-            var sw = new StringWriter();
+            var serializer = JsonSerializer.Instance.Initialize();
 
-            JsonSerializer.Instance.Initialize(sw)
-            .Serialize(obj, converters);
-            
-            return sw.ToString();
+            serializer.Serialize(obj, converters);
+
+            return serializer.Builder.ToString();
         }
+
 
         /// <summary>
         /// Serializes an object to its JSON text representation and writes to specified stream.
@@ -83,10 +83,7 @@ namespace Json.Net
         {
             using (var sw = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             {
-                JsonSerializer.Instance.Initialize(sw)
-                .Serialize(obj, converters);
-
-                sw.Flush();
+                Serialize(obj, sw, converters);
             }
         }
 

@@ -8,23 +8,12 @@ namespace Json.Net
 {
     public class ParserBase
     {
-        TextReader Reader;    
+        TextReader Reader;
+
+        char[] ReaderBuffer;
         
-        public ParserBase()
-        {
-        }
-
-
-        public virtual ParserBase Initialize(TextReader textReader)
-        {
-            Reader = textReader;
-            EndOfStream = false;
-            BufferIndex = -1;
-            BufferSize = 0;
-            ReadNext();
-            return this;
-        }
-
+        string Buffer;
+        int BufferIndex;
 
         protected char NextChar;
 
@@ -32,44 +21,79 @@ namespace Json.Net
 
         protected bool EndOfStream;
 
-        char[] Buffer = new char[1024];
-        int BufferIndex;
-        int BufferSize;
+        protected static string WhiteSpace = " \t\r\n";
+        protected static string Digits = "0123456789";
+        protected static string HexDigits = "0123456789ABCDEFabcdef";
+
+        protected static string Alpha =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "abcdefghijklmnopqrstuvwxyz";
+
+        protected static string AlphaNumeric =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "abcdefghijklmnopqrstuvwxyz" +
+            "0123456789";
+
+
+        public ParserBase(int bufferSize = 1024)
+        {
+            ReaderBuffer = new char[bufferSize];
+        }
+
+
+        ParserBase _Initialize()
+        {
+            EndOfStream = false;
+            BufferIndex = -1;
+            ReadNext();
+            return this;
+        }
+
+
+        public ParserBase Initialize(string json)
+        {
+            Reader = null;
+            Buffer = json;
+            return _Initialize();
+        }
+
+
+        public ParserBase Initialize(TextReader textReader)
+        {
+            Reader = textReader;
+            Buffer = "";
+            return _Initialize();
+        }
+
+
 
         protected void ReadNext()
         {
             if (EndOfStream)
                 return;
 
-            if (++BufferIndex >= BufferSize)
+            if (++BufferIndex < Buffer.Length)
             {
-                BufferSize = Reader.ReadBlock(Buffer, 0, Buffer.Length);
-                BufferIndex = 0;
-
-                if (BufferSize == 0)
-                {
-                    EndOfStream = true;
-                    NextChar = EOF;
-                    return;
-                }
+                NextChar = Buffer[BufferIndex];
+                return;
             }
 
-            NextChar = Buffer[BufferIndex];
+            if (Reader != null)
+            {
+                var read = Reader.ReadBlock(ReaderBuffer, 0, ReaderBuffer.Length);
+
+                Buffer = new string(ReaderBuffer, 0, read);
+                BufferIndex = 0;
+
+                if (read > 0)
+                    return;
+            }
+
+            Buffer = "";
+            BufferIndex = 0;
+            EndOfStream = true;
+            NextChar = EOF;
         }
-
-
-        protected static string WhiteSpace = " \t\r\n";
-        protected static string Digits = "0123456789";
-        protected static string HexDigits = "0123456789ABCDEFabcdef";
-
-        protected static string Alpha = 
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "abcdefghijklmnopqrstuvwxyz";
-
-        protected static string AlphaNumeric = 
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "abcdefghijklmnopqrstuvwxyz" + 
-            "0123456789";
 
 
         protected bool IsWhite

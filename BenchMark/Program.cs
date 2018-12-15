@@ -7,26 +7,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using Json.Net;
 
 namespace BenchMark
 {
-
-    [DataContract]
-    public class Employee
-    {
-        [DataMember]
-        public int id { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
-
-        [DataMember]
-        public string Email { get; set; }
-
-        [DataMember]
-        public string Dept { get; set; }
-
-    }
     class Program
     {
         
@@ -34,15 +18,15 @@ namespace BenchMark
         {
             public string Name;
 
-            public Func<List<Employee>, string> Serialize;
+            public Func<List<Pet>, string> Serialize;
             public double SerializeTime;
             
-            public Func<string, List<Employee>> Deserialize;
+            public Func<string, List<Pet>> Deserialize;
             public double DeserializeTime;
         }
 
 
-        static DataContractJsonSerializer MsSerializer = new DataContractJsonSerializer(typeof(List<Employee>));
+        static DataContractJsonSerializer MsSerializer = new DataContractJsonSerializer(typeof(List<Pet>));
         static MemoryStream MsSerializerBuffer = new MemoryStream();
 
 
@@ -51,37 +35,37 @@ namespace BenchMark
             {                
                 new BenchSet {
                     Name = "Jil",
-                    Serialize = emp => Jil.JSON.Serialize(emp),
-                    Deserialize = json => Jil.JSON.Deserialize<List<Employee>>(json)
+                    Serialize = pet => Jil.JSON.Serialize(pet),
+                    Deserialize = json => Jil.JSON.Deserialize<List<Pet>>(json)
                 },
 
                 new BenchSet
                 {
                     Name = "Microsoft",
 
-                    Serialize = emp => {
+                    Serialize = pet => {
                         var ms = new MemoryStream();
-                        MsSerializer.WriteObject(ms, emp);
+                        MsSerializer.WriteObject(ms, pet);
                         return Encoding.Default.GetString(ms.ToArray());
                     },
 
                     Deserialize= json =>
                     {
                         var ms = new MemoryStream(Encoding.Default.GetBytes(json));
-                        return (List<Employee>)MsSerializer.ReadObject(ms);
+                        return (List<Pet>)MsSerializer.ReadObject(ms);
                     }
                 },
  
                 new BenchSet {
                     Name = "Newtonsoft.Json",
                     Serialize = emp => Newtonsoft.Json.JsonConvert.SerializeObject(emp),
-                    Deserialize = json => Newtonsoft.Json.JsonConvert.DeserializeObject<List<Employee>>(json)
+                    Deserialize = json => Newtonsoft.Json.JsonConvert.DeserializeObject<List<Pet>>(json)
                 },
                 
                 new BenchSet {
                     Name = "Json.Net",
-                    Serialize = emp => Json.Net.JsonNet.Serialize(emp),
-                    Deserialize = json => Json.Net.JsonNet.Deserialize<List<Employee>>(json)
+                    Serialize = emp => JsonNet.Serialize(emp),
+                    Deserialize = json => JsonNet.Deserialize<List<Pet>>(json)
                 },
 
             };
@@ -103,25 +87,51 @@ namespace BenchMark
             var results = Benchmarks
             .Select(bench =>
             {
-                List<Employee> liemp = new List<Employee>();
-                Employee emp = new Employee();
+                var pet = new Pet();
 
-                liemp.Add(new Employee { id = 2, Name = "Debendra", Email = "debendra256@gmail.com", Dept = "IT" });
-                liemp.Add(new Employee { id = 3, Name = "Manoj", Email = "ManojMass@gmail.com", Dept = "Sales" });
-                liemp.Add(new Employee { id = 6, Name = "Kumar", Email = "Kumar256@gmail.com", Dept = "IT" });
+                var pets = new List<Pet>(){
+                    new Pet {
+                        id = 2,
+                        name = "Bella",
+                        alive = false,
+                        birth = new DateTime(2010, 2, 5),
+                        dictType = new Dictionary<string, string> {
+                            { "City", "New York" },
+                        },
+                        gender = Gender.Female,
+                        intArray = new [] {
+                            3, 5, 7
+                        }
+                    },
+                    new Pet {
+                        id = 3,
+                        name = "Lucy",
+                        alive = true,
+                        birth = new DateTime(2018, 8, 10),
+                        dictType = new Dictionary<string, string> {
+                            { "City", "Paris" },
+                        },
+                        gender = Gender.Female,
+                        intArray = new [] {
+                            2, 4, 6
+                        }
+                    },
+
+                };
+                
 
                 var jsonData1 = "";
 
                 var times = MeasureAction(() =>
                 {
-                    jsonData1 = bench.Serialize(liemp);
+                    jsonData1 = bench.Serialize(pets);
                 })
                 .Take(iterCount)
                 .ToArray();
 
                 bench.SerializeTime = times.Min(t => t.TotalMilliseconds) * 1000;
 
-                List<Employee> employeeDeserialized = null;
+                List<Pet> employeeDeserialized = null;
 
                 times = MeasureAction(() =>
                 {
