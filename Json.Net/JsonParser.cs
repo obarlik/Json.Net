@@ -61,133 +61,8 @@ namespace Json.Net
         }
         
 
-        object FromJsonType(object obj, Type targetType)
-        {
-            if (obj == null)
-                if (targetType.IsValueType)
-                    return Activator.CreateInstance(targetType);
-                else
-                    return null;
-
-            var objType = obj.GetType();
-
-            if (targetType == objType)
-                return obj;
-
-            if (objType.IsSubclassOf(targetType))
-                return obj;
-
-            if (obj is string)
-            {
-                var converter = Converters.FirstOrDefault(c => c.GetConvertingType() == targetType);
-
-                if (converter != null)
-                    return converter.Deserializer((string)obj);
-            }
-
-            if (targetType.IsArray)
-            {
-                var et = targetType.GetElementType();                
-                var t = Array.CreateInstance(et, ((IList)obj).Count);
-
-                for (int i = 0; i < t.Length; i++)
-                    t.SetValue(((IList)obj)[i], i);
-                
-                return t;
-            }
-
-            if (targetType.IsGenericType && targetType.GetInterface("IList") != null)
-            {
-                var l = (IList)obj;
-                var t = (IList)Activator.CreateInstance(targetType);
-
-                foreach (var item in l)
-                    t.Add(item);
-
-                return t;
-            }
-
-            if (targetType.IsGenericType && targetType.GetInterface("IDictionary") != null)
-            {
-                var d = (IDictionary)obj;
-                var t = (IDictionary)Activator.CreateInstance(targetType);
-
-                foreach (KeyValuePair<object, object> item in d)
-                    t.Add(item.Key, item.Value);
-
-                return t;
-            }
-
-            if (targetType == typeof(bool)
-             || targetType == typeof(bool?))
-            {
-                if (obj is string)
-                {
-                    if ((string)obj == "true" || (string)obj == "1")
-                        return true;
-
-                    if ((string)obj == "false" || (string)obj == "0")
-                        return false;
-                }
-                else if (obj is double)
-                {
-                    if ((double)obj == 1.0)
-                        return true;
-
-                    if ((double)obj == 0.0)
-                        return false;
-                }
-
-                throw new FormatException("Invalid boolean value!");
-            }
-
-            if (targetType == typeof(DateTime)
-             || targetType == typeof(DateTime?))
-            {
-                return DateTime.Parse((string)obj, CultureInfo.InvariantCulture);
-            }
-
-            if (targetType == typeof(int)
-             || targetType == typeof(int?)
-             || targetType == typeof(long)
-             || targetType == typeof(long?)
-             || targetType == typeof(short)
-             || targetType == typeof(short?))
-            {
-                return (int)(double)obj;
-            }
-
-            if (targetType == typeof(float)
-             || targetType == typeof(float?)
-             || targetType == typeof(double)
-             || targetType == typeof(double?))
-            {
-                return obj;
-            }
-
-            if (targetType == typeof(decimal)
-             || targetType == typeof(decimal?))
-            {
-                return (decimal)(double)obj;
-            }
-
-            if (targetType.IsEnum)
-            {
-                if (obj is int)
-                    return obj;
-
-                if (objType == typeof(string))
-                    return (int)Enum.Parse(targetType, (string)obj);
-                
-                return (int)(double)obj;
-            }
-
-            throw new FormatException("Unknown field type " + targetType.Name);
-        }
-        
-
         StringBuilder text = new StringBuilder();
-        
+
         public object FromJson(Type type)
         {
             object result;
@@ -244,8 +119,11 @@ namespace Json.Net
 
                 SkipWhite();
                 Match("}");
+
+                return result;
             }
-            else if (NextChar == '[')
+
+            if (NextChar == '[')
             {
                 ReadNext();
 
@@ -256,14 +134,16 @@ namespace Json.Net
                         type.GenericTypeArguments[0] :
                         typeof(object);
 
-                result = Activator.CreateInstance(
-                            typeof(List<>).MakeGenericType(elementType));
+                var list =
+                    type.IsArray ?
+                        new ArrayList() :
+                        (IList)Activator.CreateInstance(type);
 
                 while (true)
                 {
                     var item = FromJson(elementType);
 
-                    ((IList)result).Add(item);
+                    list.Add(item);
 
                     SkipWhite();
 
@@ -272,11 +152,17 @@ namespace Json.Net
 
                     ReadNext();
                 }
-                
+
                 SkipWhite();
                 Match("]");
+
+                if (list is ArrayList)
+                    return ((ArrayList)list).ToArray(elementType);
+                else
+                    return list;
             }
-            else if (NextChar == '"')
+
+            if (NextChar == '"')
             {
                 ReadNext();
 
@@ -320,28 +206,48 @@ namespace Json.Net
 
                     ReadNext();
                 }
-                
+
                 SkipWhite();
                 Match("\"");
 
                 result = text.ToString();
 
                 text.Clear();
+
+                var converter = Converters.FirstOrDefault(c => c.GetConvertingType() == type);
+
+                if (converter != null)
+                    return converter.Deserializer((string)result);
+
+                if (type == typeof(DateTime)
+                 || type == typeof(DateTime?))
+                    return DateTime.Parse((string)result, CultureInfo.InvariantCulture);
+
+                if (type == typeof(DateTimeOffset)
+                 || type == typeof(DateTimeOffset?))
+                    return DateTimeOffset.Parse((string)result, CultureInfo.InvariantCulture);
+
+                return result;
             }
             else if (NextChar == 't')
             {
                 Match("true");
-                result = true;
+                return true;
             }
             else if (NextChar == 'f')
             {
                 Match("false");
-                result = false;
+                return false;
             }
             else if (NextChar == 'n')
             {
                 Match("null");
-                result = null;
+
+                if (!(type.IsClass
+                   || Nullable.GetUnderlyingType(type) != null))
+                    throw new InvalidDataException("Type " + type.Name + "'s value cannot be null!");
+
+                return null;
             }
             else if (NextChar == '-' || IsDigit)
             {
@@ -398,14 +304,24 @@ namespace Json.Net
                     }
                 }
 
-                result = double.Parse(text.ToString(), CultureInfo.InvariantCulture);
-
+                var t = text.ToString();
                 text.Clear();
-            }
-            else
-                throw new FormatException("Unexpected character! " + NextChar);
 
-            return FromJsonType(result, type);
+                var inv = CultureInfo.InvariantCulture;
+
+                if (type.IsEnum
+                 || type == typeof(int)
+                 || type == typeof(int?))
+                    return int.Parse(t, inv);
+
+                if (type == typeof(long)
+                 || type == typeof(long?))
+                    return long.Parse(t, inv);
+
+                return double.Parse(t, inv);
+            }
+
+            throw new FormatException("Unexpected character! " + NextChar);
         }
 
 

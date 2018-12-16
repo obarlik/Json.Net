@@ -8,15 +8,16 @@
     <Description>A minimalistic JSON handler library.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/obarlik/Json.Net</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
     <PackageReleaseNotes>Performance optimizations.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.10</Version>
-    <AssemblyVersion>1.0.10.1</AssemblyVersion>
-    <FileVersion>1.0.10.1</FileVersion>
+    <Version>1.0.11</Version>
+    <AssemblyVersion>1.0.11.1</AssemblyVersion>
+    <FileVersion>1.0.11.1</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
 </Project>

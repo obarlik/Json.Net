@@ -139,7 +139,7 @@ namespace Json.Net
                 if (NextChar == c)
                     ReadNext();
                 else
-                    throw new FormatException(s + " expected!");
+                    throw new FormatException(s + " expected, but " + NextChar + " found!");
         }
     }
 }

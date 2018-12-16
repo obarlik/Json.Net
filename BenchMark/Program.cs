@@ -120,22 +120,22 @@ namespace BenchMark
                 };
                 
 
-                var jsonData1 = "";
+                var listJson = "";
 
                 var times = MeasureAction(() =>
                 {
-                    jsonData1 = bench.Serialize(pets);
+                    listJson = bench.Serialize(pets);
                 })
                 .Take(iterCount)
                 .ToArray();
 
                 bench.SerializeTime = times.Min(t => t.TotalMilliseconds) * 1000;
 
-                List<Pet> employeeDeserialized = null;
+                List<Pet> restoredList = null;
 
                 times = MeasureAction(() =>
                 {
-                    employeeDeserialized = bench.Deserialize(jsonData1);
+                    restoredList = bench.Deserialize(listJson);
                 })
                 .Take(iterCount)
                 .ToArray();
