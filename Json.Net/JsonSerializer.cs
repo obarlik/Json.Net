@@ -67,7 +67,20 @@ namespace Json.Net
 
             if (obj is string)
             {
-                Write(string.Format("\"{0}\"", obj));
+                Write(string.Format(
+                    "\"{0}\"",
+                    string.Join("",
+                        ((string)obj)
+                        .Select(
+                            c =>
+                                c == '\r' ? "\\r" :
+                                c == '\n' ? "\\n" :
+                                c == '\b' ? "\\b" :
+                                c == '\t' ? "\\t" :
+                                c == '\f' ? "\\f" :
+                                c.ToString())
+                     )));
+
                 return;
             }
 

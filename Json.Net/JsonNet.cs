@@ -43,7 +43,7 @@ namespace Json.Net
 
 
         /// <summary>
-        /// Deserializes an object from a JSON text stream.
+        /// Deserializes an object from a JSON text reader.
         /// </summary>
         /// <typeparam name="T">Deserialized object's type</typeparam>
         /// <param name="reader">Source JSON text reader</param>
@@ -89,7 +89,7 @@ namespace Json.Net
 
 
         /// <summary>
-        /// Serializes an object to its JSON text representation and writes to specified stream.
+        /// Serializes an object to its JSON text representation and writes to a textwriter.
         /// </summary>
         /// <param name="obj">Object to be serialized</param>
         /// <param name="writer">Destination text writer</param>

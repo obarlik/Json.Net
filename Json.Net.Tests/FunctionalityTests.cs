@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Json.Net.Tests
@@ -30,8 +31,28 @@ namespace Json.Net.Tests
 
         string OriginalPetJson =
             "{\"id\":1,\"name\":\"gucci\",\"birth\":\"08/30/2012 13:41:59\","
-          + "\"alive\":true,\"gender\":1,\"dictType\":{\"Key1\":\"Value1\","
+          + "\"alive\":true,\"gender\":1,\"dictType\":{\"Key1\":\"Value1\\nValue2\","
           + "\"Key2\":\"Value2\"},\"intArray\":[1,2,3]}";
+
+        string[] OriginalPetJsonFormatted =
+            {
+            "{",
+            "  \"id\" : 1,",
+            "  \"name\" : \"gucci\",",
+            "  \"birth\" : \"08/30/2012 13:41:59\",",
+            "  \"alive\" : true,",
+            "  \"gender\" : 1,",
+            "  \"dictType\" : {",
+            "    \"Key1\" : \"Value1\\nValue2\",",
+            "    \"Key2\" : \"Value2\"",
+            "  },",
+            "  \"intArray\" : [",
+            "    1,",
+            "    2,",
+            "    3",
+            "  ]",
+            "}"
+            };
 
         Pet OriginalPet = new Pet()
         {
@@ -42,7 +63,7 @@ namespace Json.Net.Tests
             gender = Gender.Male,
             dictType = new Dictionary<string, string>()
                 {
-                    {"Key1", "Value1"},
+                    {"Key1", "Value1\nValue2"},
                     {"Key2", "Value2"},
                 },
             intArray = new[] { 1, 2, 3 }
@@ -61,7 +82,8 @@ namespace Json.Net.Tests
         [TestMethod]
         public void DeserializationTest()
         {
-            var restoredPet = JsonNet.Deserialize<Pet>(OriginalPetJson);
+            var restoredPet = JsonNet.Deserialize<Pet>(
+                string.Join("\n", OriginalPetJsonFormatted));
             
             Assert.AreEqual(restoredPet.id, OriginalPet.id);
             Assert.AreEqual(restoredPet.name, OriginalPet.name);
@@ -102,14 +124,18 @@ namespace Json.Net.Tests
 
         }
 
+
         [TestMethod]
-        public void AnotherTest()
+        public void ListTest()
         {
             var json = "[{\"id\":2,\"Name\":\"Debendra\",\"Email\":\"debendra256@gmail.com\"," +
                 "\"Dept\":\"IT\"},{\"id\":3,\"Name\":\"Manoj\",\"Email\":\"ManojMass@gmail.com\"," +
                 "\"Dept\":\"Sales\"},{\"id\":6,\"Name\":\"Kumar\",\"Email\":\"Kumar256@gmail.com\",\"Dept\":\"IT\"}]";
 
             var empList = JsonNet.Deserialize<Employee[]>(json);
+
+            Assert.IsTrue(empList.Length == 3);
+            Assert.AreEqual(empList.Last().Dept, "IT");
         }
     }
 }
