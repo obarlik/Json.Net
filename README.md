@@ -51,25 +51,37 @@ string JsonNet.Serialize(object obj, params IJsonConverter[] converters)
   Serializes an object to its JSON text representation.
 
   #### Parameters
-  obj        : Object to be serialized  
-  
+  obj        : Object to be serialized    
   converters : Custom type converters. Default: empty
 
 ***
 
 ``` cs
-void SerializeToStream(object obj, Stream stream, params IJsonConverter[] converters)
+void Serialize(object obj, Stream stream, params IJsonConverter[] converters)
 ```
 
   #### Description
   Serializes an object to a JSON text stream destination.
 
   #### Parameters
-  obj        : Object to be serialized  
-  
+  obj : Object to be serialized  
+  stream : JSON stream  
   converters : Custom type converters. Default: empty
 
 ***
+
+``` cs
+void Serialize(object obj, TextWriter writer, params IJsonConverter[] converters)
+```
+
+  #### Description
+  Serializes an object to a JSON text writer destination.
+
+  #### Parameters
+  obj : Object to be serialized   
+  writer : JSON text writer  
+  converters : Custom type converters. Default: empty
+                
 
 ``` cs
 T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
@@ -79,28 +91,39 @@ T JsonNet.Deserialize<T>(string json, params IJsonConverter[] converters)
   Deserializes an object from a JSON text.
   
   #### Parameters
-  T : Deserialized object's type
-  
-  json : JSON text
-  
+  T : Deserialized object's type    
+  json : JSON text    
   converters : Custom converters. Default: empty
   
 ***
 
 ``` cs
-T DeserializeFromStream<T>(Stream stream, params IJsonConverter[] converters)
+T Deserialize<T>(Stream stream, params IJsonConverter[] converters)
 ```
   
   #### Description
   Deserializes an object from a JSON text stream source.
   
   #### Parameters
-  T : Deserialized object's type
-  
-  json : JSON text
-  
+  T : Deserialized object's type    
+  stream : JSON stream    
   converters : Custom converters. Default: empty
   
+***
+
+``` cs
+T Deserialize<T>(TextReader reader, params IJsonConverter[] converters)
+```
+
+  #### Description
+  Deserializes an object from a JSON text reader source.
+  
+  #### Parameters
+  T : Deserialized object's type    
+  reader : JSON text reader    
+  converters : Custom converters. Default: empty
+
+
 ***
 
 ### Converter interface
