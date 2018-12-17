@@ -30,7 +30,7 @@ namespace Json.Net.Tests
 
 
         string OriginalPetJson =
-            "{\"id\":1,\"name\":\"gucci\",\"birth\":\"08/30/2012 13:41:59\","
+            "{\"id\":1,\"name\":\"gucci\",\"birth\":\"08\\/30\\/2012 13:41:59\","
           + "\"alive\":true,\"gender\":1,\"dictType\":{\"Key1\":\"Value1\\nValue2\","
           + "\"Key2\":\"Value2\"},\"intArray\":[1,2,3]}";
 
@@ -39,7 +39,7 @@ namespace Json.Net.Tests
             "{",
             "  \"id\" : 1,",
             "  \"name\" : \"gucci\",",
-            "  \"birth\" : \"08/30/2012 13:41:59\",",
+            "  \"birth\" : \"08\\/30\\/2012 13:41:59\",",
             "  \"alive\" : true,",
             "  \"gender\" : 1,",
             "  \"dictType\" : {",
