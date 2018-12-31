@@ -18,7 +18,7 @@ namespace Json.Net
         public JsonSerializer()
         { }
 
-        
+
 
         public JsonSerializer Initialize()
         {
@@ -109,11 +109,13 @@ namespace Json.Net
             {
                 Write(obj is IDictionary ? "{" : "[");
 
-                var i = 0;
+                var first = true;
 
                 foreach (var o in (IEnumerable)obj)
                 {
-                    if (++i > 1)
+                    if (first)
+                        first = false;
+                    else
                         Write(",");
 
                     Serialize(o, converters);
@@ -164,19 +166,22 @@ namespace Json.Net
             {
                 Write("{");
 
-                var i = 0;
+                var first = true;
 
-                foreach(var m in SerializerMap.GetSerializerMap(objectType)
-                                 .Members)
+                foreach (var m in SerializerMap.GetSerializerMap(objectType)
+                                  .Members)
                 {
-                    if (++i > 1)
+                    if (first)
+                        first = false;
+                    else
                         Write(",");
 
                     if (objectType == typeof(DictionaryEntry))
                     {
-                        Serialize(((DictionaryEntry)obj).Key.ToString());
+                        var d = (DictionaryEntry)obj;
+                        Serialize(d.Key.ToString());
                         Write(":");
-                        Serialize(((DictionaryEntry)obj).Value, converters);
+                        Serialize(d.Value, converters);
                     }
                     else
                     {
@@ -185,7 +190,7 @@ namespace Json.Net
                         Serialize(m.GetValue(obj), converters);
                     }
                 }
-
+               
                 Write("}");
                 return;
             }

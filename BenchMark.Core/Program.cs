@@ -173,9 +173,9 @@ namespace BenchMark
         {
             while (true)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var watch = DateTime.UtcNow;
                 action();
-                yield return watch.Elapsed;
+                yield return DateTime.UtcNow - watch;
             }
         }
     }
