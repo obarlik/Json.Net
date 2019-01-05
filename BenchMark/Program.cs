@@ -73,7 +73,7 @@ namespace BenchMark
 
         static void Main(string[] args)
         {
-            var iterCount = 10000;
+            var iterCount = 20000;
 
             if (args.Count() > 0)
                 int.TryParse(args[0], out iterCount);
@@ -173,7 +173,7 @@ namespace BenchMark
         {
             while (true)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var watch = Stopwatch.StartNew();
                 action();
                 yield return watch.Elapsed;
             }
