@@ -173,7 +173,7 @@ namespace BenchMark
         {
             while (true)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var watch = Stopwatch.StartNew();
                 action();
                 yield return watch.Elapsed;
             }

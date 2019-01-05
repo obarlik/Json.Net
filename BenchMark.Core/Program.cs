@@ -33,7 +33,8 @@ namespace BenchMark
         static BenchSet[] Benchmarks =
             new BenchSet[]
             {
-                new BenchSet {
+                new BenchSet
+                {
                     Name = "Jil",
                     Serialize = pet => Jil.JSON.Serialize(pet),
                     Deserialize = json => Jil.JSON.Deserialize<List<Pet>>(json)
@@ -56,13 +57,15 @@ namespace BenchMark
                     }
                 },
 
-                new BenchSet {
+                new BenchSet 
+                {
                     Name = "Newtonsoft.Json",
                     Serialize = emp => Newtonsoft.Json.JsonConvert.SerializeObject(emp),
                     Deserialize = json => Newtonsoft.Json.JsonConvert.DeserializeObject<List<Pet>>(json)
                 },
 
-                new BenchSet {
+                new BenchSet 
+                {
                     Name = "Json.Net",
                     Serialize = emp => JsonNet.Serialize(emp),
                     Deserialize = json => JsonNet.Deserialize<List<Pet>>(json)
@@ -73,7 +76,7 @@ namespace BenchMark
 
         static void Main(string[] args)
         {
-            var iterCount = 10000;
+            var iterCount = 100000;
 
             if (args.Count() > 0)
                 int.TryParse(args[0], out iterCount);
@@ -165,7 +168,7 @@ namespace BenchMark
             }
 
             Console.WriteLine();
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
 
