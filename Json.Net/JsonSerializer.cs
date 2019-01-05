@@ -42,7 +42,8 @@ namespace Json.Net
 
         public static JsonSerializer Instance
         {
-            get {
+            get
+            {
                 return _Instance ??
                       (_Instance = new JsonSerializer());
             }
@@ -75,23 +76,23 @@ namespace Json.Net
 
             if (!SerializerCache.TryGetValue(objectType, out cnv))
             {
-                var strConverter = new Func<object, string>( 
-                    s => string.Format(
-                         "\"{0}\"",
-                         string.Join("",
-                             ((string)s)
-                             .Select(
-                                 c =>
-                                     c == '\r' ? "\\r" :
-                                     c == '\n' ? "\\n" :
-                                     c == '\b' ? "\\b" :
-                                     c == '\t' ? "\\t" :
-                                     c == '\f' ? "\\f" :
-                                     c == '"' ? "\\\"" :
-                                     c == '\\' ? "\\\\" :
-                                     c == '/' ? "\\/" :
-                                     c.ToString())
-                          )));
+                var strConverter = new Func<object, string>(
+                    s => "\""
+                       + string.Join(
+                            "",
+                            ((string)s)
+                            .Select(
+                                c =>
+                                c == '\r' ? "\\r" :
+                                c == '\n' ? "\\n" :
+                                c == '\t' ? "\\t" :
+                                c == '"' ? "\\\"" :
+                                c == '\\' ? "\\\\" :
+                                c == '/' ? "\\/" :
+                                c == '\b' ? "\\b" :
+                                c == '\f' ? "\\f" :
+                                c.ToString()))
+                       + "\"");
 
                 if (obj is string)
                 {
@@ -147,19 +148,17 @@ namespace Json.Net
                 {
                     var kvt = typeof(KeyValuePair<,>).MakeGenericType(objectType.GenericTypeArguments);
 
-                    if (obj.GetType() == kvt)
-                    {
-                        var k = kvt.GetProperty("Key").GetValue(obj).ToString();
-                        var v = kvt.GetProperty("Value").GetValue(obj);
-
-                        Write(strConverter(k));
-                        Write(":");
-                        Serialize(v, converters);
-                        return;
-                    }
-                    else
+                    if (obj.GetType() != kvt)
                         throw new InvalidDataException(
                             "Unexpected key type! '" + objectType.GenericTypeArguments[0].Name + "'");
+
+                    var k = kvt.GetProperty("Key").GetValue(obj).ToString();
+                    var v = kvt.GetProperty("Value").GetValue(obj);
+
+                    Write(strConverter(k));
+                    Write(":");
+                    Serialize(v, converters);
+                    return;
                 }
                 else if (!objectType.IsPrimitive)
                 {
@@ -193,11 +192,11 @@ namespace Json.Net
                     Write("}");
                     return;
                 }
-                else
+
+                SerializerCache[objectType] =
+                    cnv ??
                     throw new InvalidOperationException(
-                        "Unknown object type! " + objectType.FullName);
-                
-                SerializerCache[objectType] = cnv;
+                        "Unknown object type! " + objectType.FullName); ;
             }
 
             Write(cnv(obj));

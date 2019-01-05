@@ -73,7 +73,7 @@ namespace BenchMark
 
         static void Main(string[] args)
         {
-            var iterCount = 20000;
+            var iterCount = 10000;
 
             if (args.Count() > 0)
                 int.TryParse(args[0], out iterCount);
