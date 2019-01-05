@@ -72,6 +72,7 @@ namespace Json.Net
             if (NextChar == '{')
             {
                 ReadNext();
+                SkipWhite();
 
                 if (type.IsValueType)
                     throw new FormatException("Unexpected type!");
@@ -86,7 +87,7 @@ namespace Json.Net
                     type.GenericTypeArguments[1] :
                     null;
 
-                while (true)
+                while (NextChar!='}')
                 {
                     var name = (string)FromJson(nameType);
 
@@ -111,13 +112,16 @@ namespace Json.Net
 
                     SkipWhite();
 
-                    if (NextChar != ',')
-                        break;
+                    if (NextChar == ',')
+                    {
+                        ReadNext();
+                        SkipWhite();
+                        continue;
+                    }
 
-                    ReadNext();
+                    break;
                 }
-
-                SkipWhite();
+                
                 Match("}");
 
                 return result;
@@ -126,6 +130,7 @@ namespace Json.Net
             if (NextChar == '[')
             {
                 ReadNext();
+                SkipWhite();
 
                 var elementType =
                     type.IsArray ?
@@ -139,7 +144,7 @@ namespace Json.Net
                         new ArrayList() :
                         (IList)Activator.CreateInstance(type);
 
-                while (true)
+                while (NextChar != ']')
                 {
                     var item = FromJson(elementType);
 
@@ -147,13 +152,16 @@ namespace Json.Net
 
                     SkipWhite();
 
-                    if (NextChar != ',')
-                        break;
+                    if (NextChar == ',')
+                    {
+                        ReadNext();
+                        SkipWhite();
+                        continue;
+                    }
 
-                    ReadNext();
+                    break;
                 }
 
-                SkipWhite();
                 Match("]");
 
                 if (list is ArrayList)

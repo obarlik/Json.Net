@@ -137,5 +137,6 @@ namespace Json.Net.Tests
             Assert.IsTrue(empList.Length == 3);
             Assert.AreEqual(empList.Last().Dept, "IT");
         }
+        
     }
 }
