@@ -11,7 +11,7 @@ namespace Json.Net
     public class JsonSerializer
     {
         TextWriter Writer;
-        public StringBuilder Builder = new StringBuilder();
+        public StringBuilder Builder = new StringBuilder(1024);
 
         protected Action<string> Write;
 
@@ -77,22 +77,30 @@ namespace Json.Net
             if (!SerializerCache.TryGetValue(objectType, out cnv))
             {
                 var strConverter = new Func<object, string>(
-                    s => "\""
-                       + string.Join(
-                            "",
-                            ((string)s)
-                            .Select(
-                                c =>
-                                c == '\r' ? "\\r" :
-                                c == '\n' ? "\\n" :
-                                c == '\t' ? "\\t" :
-                                c == '"' ? "\\\"" :
-                                c == '\\' ? "\\\\" :
-                                c == '/' ? "\\/" :
-                                c == '\b' ? "\\b" :
-                                c == '\f' ? "\\f" :
-                                c.ToString()))
-                       + "\"");
+                    s => 
+                    {
+                        var t = (string)s;
+                        var r = "\"";
+
+                        for (var i = 0;i<t.Length;i++)
+                        {
+                            var c = t[i];
+
+                            r += c == '\r' ? "\\r" :
+                                 c == '\n' ? "\\n" :
+                                 c == '\t' ? "\\t" :
+                                 c == '"' ? "\\\"" :
+                                 c == '\\' ? "\\\\" :
+                                 c == '/' ? "\\/" :
+                                 c == '\b' ? "\\b" :
+                                 c == '\f' ? "\\f" :
+                                 c.ToString();
+                        }
+
+                        r += "\"";
+
+                        return r;
+                    });
 
                 if (obj is string)
                 {

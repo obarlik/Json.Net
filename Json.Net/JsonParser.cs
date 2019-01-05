@@ -87,6 +87,8 @@ namespace Json.Net
                     type.GenericTypeArguments[1] :
                     null;
 
+                var mIndex = 0;
+
                 while (NextChar!='}')
                 {
                     var name = (string)FromJson(nameType);
@@ -96,7 +98,18 @@ namespace Json.Net
 
                     var map = SerializerMap.GetSerializerMap(type);
 
-                    var field = valueType == null ? map.Members.FirstOrDefault(m => m.Name == name) : null;
+                    MemberAccessor field = null;
+
+                    if (valueType == null)
+                    {
+                        for (var i = mIndex; i < map.Members.Length; i++)
+                            if (map.Members[i].Name == name)
+                            {
+                                field = map.Members[i];
+                                break;
+                            }
+                    }
+
                     var fieldType = field == null ? valueType : field.ValueType;
 
                     var value = FromJson(fieldType);
