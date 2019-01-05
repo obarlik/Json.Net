@@ -10,12 +10,12 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>Escape hotfix 2</PackageReleaseNotes>
+    <PackageReleaseNotes>Bug#1 Deserialization issue fixed. Thanks bouyeijiang.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.13</Version>
-    <AssemblyVersion>1.0.13.1</AssemblyVersion>
-    <FileVersion>1.0.13.1</FileVersion>
+    <Version>1.0.14</Version>
+    <AssemblyVersion>1.0.14.1</AssemblyVersion>
+    <FileVersion>1.0.14.1</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
