@@ -15,6 +15,7 @@ namespace Json.Net
     public class JsonParser : ParserBase
     {
         IJsonConverter[] Converters;
+        IPropertyNameTransform PropertyNameTransform;
 
         static Dictionary<char, char> EscapeMap = 
             new Dictionary<char, char>()
@@ -45,18 +46,20 @@ namespace Json.Net
         }
 
 
-        public JsonParser Initialize(string json, IJsonConverter[] converters)
+        public JsonParser Initialize(string json, SerializationOptions options)
         {
             base.Initialize(json);
-            Converters = converters;
+            Converters = options?.Converters;
+            PropertyNameTransform = options?.PropertyNameTransform;
             return this;
         }
 
 
-        public JsonParser Initialize(TextReader jsonReader, params IJsonConverter[] converters)
+        public JsonParser Initialize(TextReader jsonReader, SerializationOptions options)
         {
             base.Initialize(jsonReader);
-            Converters = converters;
+            Converters = options?.Converters;
+            PropertyNameTransform = options.PropertyNameTransform;
             return this;
         }
         
@@ -103,11 +106,16 @@ namespace Json.Net
                     if (valueType == null)
                     {
                         for (var i = mIndex; i < map.Members.Length; i++)
-                            if (map.Members[i].Name == name)
+                        {
+                            string memberName = map.Members[i].Name;
+                            if (PropertyNameTransform != null)
+                                memberName = PropertyNameTransform.Transform(memberName);
+                            if (memberName == name)
                             {
                                 field = map.Members[i];
                                 break;
                             }
+                        }
                     }
 
                     var fieldType = field == null ? valueType : field.ValueType;
@@ -235,7 +243,7 @@ namespace Json.Net
 
                 text.Clear();
 
-                var converter = Converters.FirstOrDefault(c => c.GetConvertingType() == type);
+                var converter = Converters?.FirstOrDefault(c => c.GetConvertingType() == type);
 
                 if (converter != null)
                     return converter.Deserializer((string)result);
