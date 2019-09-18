@@ -54,7 +54,7 @@ namespace Json.Net.Tests
 
 
         [TestMethod]
-        public void SerializationTest()
+        public void CamelCaseSerializationTest()
         {
             var petJson = JsonNet.Serialize(OriginalPet, PropertyNameTransforms.TitleToCamelCase);
 
