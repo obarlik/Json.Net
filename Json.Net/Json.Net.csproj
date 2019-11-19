@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,14 +10,14 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>Credits go to johnfnz for "Add SerializationOptions and PropertyNameTransforms" update.</PackageReleaseNotes>
+    <PackageReleaseNotes>TimeSpan bug fixed</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.17</Version>
-    <AssemblyVersion>1.0.17.1</AssemblyVersion>
-    <FileVersion>1.0.17.1</FileVersion>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.18</Version>
+    <AssemblyVersion>1.0.18.1</AssemblyVersion>
+    <FileVersion>1.0.18.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
