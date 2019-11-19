@@ -10,12 +10,12 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>Serialization performance tweaks.</PackageReleaseNotes>
+    <PackageReleaseNotes>Credits go to johnfnz for "Add SerializationOptions and PropertyNameTransforms" update.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.16</Version>
-    <AssemblyVersion>1.0.16.1</AssemblyVersion>
-    <FileVersion>1.0.16.1</FileVersion>
+    <Version>1.0.17</Version>
+    <AssemblyVersion>1.0.17.1</AssemblyVersion>
+    <FileVersion>1.0.17.1</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/obarlik/Json.Net/master/LICENSE</PackageLicenseUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
