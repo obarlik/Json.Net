@@ -54,7 +54,7 @@ namespace Json.Net
             new Dictionary<Type, Func<object, string>>();
 
 
-        public void Serialize(object obj, params IJsonConverter[] converters)
+        public void Serialize(object obj, SerializationOptions options)
         {
             if (obj == null)
             {
@@ -64,11 +64,11 @@ namespace Json.Net
 
             var objectType = obj.GetType();
 
-            var converter = converters.FirstOrDefault(c => c.GetConvertingType() == objectType);
+            var converter = options?.Converters?.FirstOrDefault(c => c.GetConvertingType() == objectType);
 
             if (converter != null)
             {
-                Serialize(converter.Serializer(obj), converters);
+                Serialize(converter.Serializer(obj), options);
                 return;
             }
 
@@ -119,7 +119,7 @@ namespace Json.Net
                         else
                             Write(",");
 
-                        Serialize(o, converters);
+                        Serialize(o, options);
                     }
 
                     Write(obj is IDictionary ? "}" : "]");
@@ -165,7 +165,7 @@ namespace Json.Net
 
                     Write(strConverter(k));
                     Write(":");
-                    Serialize(v, converters);
+                    Serialize(v, options);
                     return;
                 }
                 else if (!objectType.IsPrimitive)
@@ -187,13 +187,16 @@ namespace Json.Net
                             var d = (DictionaryEntry)obj;
                             Write(strConverter(d.Key.ToString()));
                             Write(":");
-                            Serialize(d.Value, converters);
+                            Serialize(d.Value, options);
                         }
                         else
                         {
-                            Write(strConverter(m.Name));
+                            string memberName = m.Name;
+                            if (options?.PropertyNameTransform != null)
+                                memberName = options?.PropertyNameTransform.Transform(m.Name);
+                            Write(strConverter(memberName));
                             Write(":");
-                            Serialize(m.GetValue(obj), converters);
+                            Serialize(m.GetValue(obj), options);
                         }
                     }
 
