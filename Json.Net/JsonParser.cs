@@ -255,6 +255,10 @@ namespace Json.Net
                 if (type == typeof(DateTimeOffset)
                  || type == typeof(DateTimeOffset?))
                     return DateTimeOffset.Parse((string)result, CultureInfo.InvariantCulture);
+                
+                if (type == typeof(TimeSpan)
+                 || type == typeof(TimeSpan?))
+                    return TimeSpan.Parse((string)result, CultureInfo.InvariantCulture);
 
                 return result;
             }

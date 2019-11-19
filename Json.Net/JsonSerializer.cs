@@ -148,6 +148,14 @@ namespace Json.Net
                 {
                     cnv = d => strConverter(((DateTime)d).ToString(CultureInfo.InvariantCulture));
                 }
+                else if (obj is DateTimeOffset || obj is DateTimeOffset?)
+                {
+                    cnv = d => strConverter(((DateTimeOffset)d).ToString(CultureInfo.InvariantCulture));
+                }
+                else if (obj is TimeSpan || obj is TimeSpan?)
+                {
+                    cnv = d => strConverter(((TimeSpan)d).ToString("c"));
+                }
                 else if (obj is Enum)
                 {
                     cnv = e => ((int)e).ToString(CultureInfo.InvariantCulture);
