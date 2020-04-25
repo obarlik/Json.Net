@@ -27,6 +27,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
+        artifacts: Json.Net/bin/Release/Json.Net.*.nupkg
         draft: false
         prerelease: false
         allowUpdates: true
