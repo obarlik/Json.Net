@@ -1,21 +1,20 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Json.Net.Tests
 {
-    [TestClass]
     public class BugTests
     {
         class Bug001
-        {   
+        {
             public string[] list;
 
             public string msg;
         }
 
 
-        [TestMethod]
+        [Test]
         public void TestBug001()
         {
             var json = "{\"list\":[],\"msg\":\"OK\"}";
@@ -30,6 +29,7 @@ namespace Json.Net.Tests
 
             Assert.IsTrue(bug2.list.Length == 0);
             Assert.AreEqual(bug1.msg, bug2.msg);
+            Assert.Pass();
         }
 
 
@@ -39,7 +39,7 @@ namespace Json.Net.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void TestBug002()
         {
             var bug002 = new Bug002 { interval = TimeSpan.FromMinutes(2) };
@@ -49,17 +49,17 @@ namespace Json.Net.Tests
             var constructed = JsonNet.Deserialize<Bug002>(json);
 
             Assert.AreEqual(bug002.interval, constructed.interval);
-
+            Assert.Pass();
         }
 
         class TestBug003Configuration
         {
             public enum Protocols { Udp, Tcp }
-         
+
             public (IPAddress IpAddress, int Port, Protocols Protocol) NetworkSettings { get; private set; } = (IPAddress.Any, 10001, Protocols.Udp);
         }
 
-        [TestMethod]
+        [Test]
         public void TestBug003()
         {
             var configuration = new TestBug003Configuration();
@@ -71,6 +71,7 @@ namespace Json.Net.Tests
             );
 
             var json = JsonNet.Serialize(new TestBug003Configuration(), converter);
+            Assert.Pass();
         }
     }
 }

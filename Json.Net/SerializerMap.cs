@@ -40,7 +40,8 @@ namespace Json.Net
             Members =
                 type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
                 .Where(m => m.MemberType == MemberTypes.Field
-                         || m.MemberType == MemberTypes.Property)
+                         || (m.MemberType == MemberTypes.Property
+                             && type.GetProperty(m.Name).CanRead))
                 .Select(m =>
                     m.MemberType == MemberTypes.Property ?
                     new MemberAccessor

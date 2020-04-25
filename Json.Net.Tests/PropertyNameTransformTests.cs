@@ -1,10 +1,9 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Json.Net.Tests
 {
-    [TestClass]
     public class PropertyNameTransformTests
     {
         enum Gender
@@ -55,16 +54,17 @@ namespace Json.Net.Tests
         };
 
 
-        [TestMethod]
+        [Test]
         public void CamelCaseSerializationTest()
         {
             var petJson = JsonNet.Serialize(OriginalPet, PropertyNameTransforms.TitleToCamelCase);
 
             Assert.AreEqual(originalPetJson, petJson);
+            Assert.Pass();
         }
 
 
-        [TestMethod]
+        [Test]
         public void CamelCaseDeserializationTest()
         {
             var restoredPet = JsonNet.Deserialize<Pet>(originalPetJson, PropertyNameTransforms.TitleToCamelCase);
@@ -80,6 +80,7 @@ namespace Json.Net.Tests
             Assert.AreEqual(restoredPet.IntArray[1],        OriginalPet.IntArray[1]);
             Assert.AreEqual(restoredPet.Owner.Id,           OriginalPet.Owner.Id);
             Assert.AreEqual(restoredPet.Owner.Name,         OriginalPet.Owner.Name);
+            Assert.Pass();
         }
     }
 }

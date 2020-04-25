@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Json.Net.Tests
 {
-    [TestClass]
     public class FunctionalityTests
     {
         enum Gender
@@ -72,16 +71,17 @@ namespace Json.Net.Tests
         };
 
 
-        [TestMethod]
+        [Test]
         public void SerializationTest()
         {
             var petJson = JsonNet.Serialize(OriginalPet);
 
             Assert.AreEqual(petJson, OriginalPetJson);
+            Assert.Pass();
         }
 
 
-        [TestMethod]
+        [Test]
         public void DeserializationTest()
         {
             var restoredPet = JsonNet.Deserialize<Pet>(
@@ -97,6 +97,7 @@ namespace Json.Net.Tests
             Assert.AreEqual(restoredPet.intArray[0], OriginalPet.intArray[0]);
             Assert.AreEqual(restoredPet.intArray[1], OriginalPet.intArray[1]);
             Assert.AreEqual(restoredPet.intArray[2], OriginalPet.intArray[2]);
+            Assert.Pass();
         }
 
 
@@ -106,14 +107,15 @@ namespace Json.Net.Tests
                 s => DateTime.ParseExact(s, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture));
 
 
-        [TestMethod]
+        [Test]
         public void ConverterTest()
         {
             var petJson = JsonNet.Serialize(OriginalPet, DateConverter);
 
             var restoredPet = JsonNet.Deserialize<Pet>(petJson);
 
-            Debug.Assert(restoredPet.birth.ToString() == OriginalPet.birth.ToString());
+            Assert.AreEqual(restoredPet.birth.ToString(), OriginalPet.birth.ToString());
+            Assert.Pass();
         }
 
 
@@ -127,7 +129,7 @@ namespace Json.Net.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void ListTest()
         {
             var json = "[{\"id\":2,\"Name\":\"Debendra\",\"Email\":\"debendra256@gmail.com\"," +
@@ -138,6 +140,7 @@ namespace Json.Net.Tests
 
             Assert.IsTrue(empList.Length == 3);
             Assert.AreEqual(empList.Last().Dept, "IT");
+            Assert.Pass();
         }
         
     }

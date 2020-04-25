@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Json.Net
@@ -201,7 +202,15 @@ namespace Json.Net
                                 memberName = options?.PropertyNameTransform.Transform(m.Name);
                             Write(strConverter(memberName));
                             Write(":");
-                            Serialize(m.GetValue(obj), options);
+
+                            try
+                            {
+                                Serialize(m.GetValue(obj), options);
+                            }
+                            catch(TargetInvocationException)
+                            {
+                                Serialize(null, options);
+                            }
                         }
                     }
 
