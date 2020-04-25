@@ -9,8 +9,10 @@ namespace Json.Net.Tests
     {
         enum Gender
         {
+            None,
             Female,
-            Male
+            Male,
+            Other
         }
 
         class Person
@@ -33,7 +35,7 @@ namespace Json.Net.Tests
 
         const string originalPetJson =
             "{\"id\":1,\"name\":\"gucci\",\"birth\":\"08\\/30\\/2012 13:41:59\","
-          + "\"alive\":true,\"gender\":1,\"dictType\":{\"Key1\":\"Value1\\nValue2\","
+          + "\"alive\":true,\"gender\":2,\"dictType\":{\"Key1\":\"Value1\\nValue2\","
           + "\"Key2\":\"Value2\"},\"intArray\":[1,2,3],\"owner\":{\"id\":1,\"name\":\"chanel\"}}";
 
         Pet OriginalPet = new Pet()

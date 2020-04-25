@@ -73,6 +73,7 @@ namespace Json.Net
             }
 
             Func<object, string> cnv;
+            Type genericType; 
 
             if (!SerializerCache.TryGetValue(objectType, out cnv))
             {
@@ -160,16 +161,12 @@ namespace Json.Net
                 {
                     cnv = e => ((int)e).ToString(CultureInfo.InvariantCulture);
                 }
-                else if (objectType.IsGenericType)
+                else if (objectType.IsGenericType
+                      && objectType.GenericTypeArguments.Length == 2
+                      && objectType == (genericType = typeof(KeyValuePair<,>).MakeGenericType(objectType.GenericTypeArguments)))
                 {
-                    var kvt = typeof(KeyValuePair<,>).MakeGenericType(objectType.GenericTypeArguments);
-
-                    if (obj.GetType() != kvt)
-                        throw new InvalidDataException(
-                            "Unexpected key type! '" + objectType.GenericTypeArguments[0].Name + "'");
-
-                    var k = kvt.GetProperty("Key").GetValue(obj).ToString();
-                    var v = kvt.GetProperty("Value").GetValue(obj);
+                    var k = genericType.GetProperty("Key").GetValue(obj).ToString();
+                    var v = genericType.GetProperty("Value").GetValue(obj);
 
                     Write(strConverter(k));
                     Write(":");
