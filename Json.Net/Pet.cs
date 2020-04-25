@@ -8,7 +8,9 @@ namespace Json.Net
     public enum Gender
     {
         Female,
-        Male
+        Male,
+        Other,
+        None
     }
 
 
