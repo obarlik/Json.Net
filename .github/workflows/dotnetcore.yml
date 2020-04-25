@@ -9,18 +9,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1.0.2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.108
+        dotnet-version: 2.2.207
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
-      run: dotnet test --no-restore --verbosity normal    
-    - name: Publish NuGet
-      uses: rohith/publish-nuget@v2.3.0
-      with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: ./
-        # API key for the NuGet feed
-        NUGET_KEY: 27788f3c90c02b09fb0e839f1a6eec551fd2c8b8
+      run: dotnet test --no-restore --verbosity normal
