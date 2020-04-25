@@ -1,3 +1,5 @@
+![.NET Core](https://github.com/obarlik/Json.Net/workflows/.NET%20Core/badge.svg)
+
 # Json.Net
 A minimalistic JSON handler library. 
 
