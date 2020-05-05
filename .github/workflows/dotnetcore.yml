@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.207
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
@@ -24,10 +26,8 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
 
-    - name: Generate nuget package
-      run: dotnet pack --configuration Release
+    - name: Generate a NuGet package
+      run: dotnet pack --no-build -c Release -o .
 
-    - name: Publish nuget package
-      run: find . -name *.nupkg -type f -print0 | xargs -0 -I pkg dotnet nuget push pkg -k $nuget_api_key -s "https://api.nuget.org/v3/index.json"
-      env:
-        nuget_api_key: ${{ secrets.NUGET_API_KEY }}
+    - name: Push to GitHub package registry
+      run: dotnet nuget push *.nupkg
