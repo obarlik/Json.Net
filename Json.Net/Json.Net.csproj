@@ -10,15 +10,14 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>@McTopaz Issue fixed: Serialize anonymous object containing an IP-address, an int and an enum #6
-@lizelive Issue fixed: 100% more gender (#7)</PackageReleaseNotes>
+    <PackageReleaseNotes>Github actions setup completed.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <Version>1.0.21</Version>
-    <AssemblyVersion>1.0.21.1</AssemblyVersion>
-    <FileVersion>1.0.21.1</FileVersion>
+    <Version>1.0.22</Version>
+    <AssemblyVersion>1.0.22.1</AssemblyVersion>
+    <FileVersion>1.0.22.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>    
     <Copyright />
   </PropertyGroup>
 
