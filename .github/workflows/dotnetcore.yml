@@ -28,6 +28,6 @@ jobs:
       run: dotnet pack --configuration Release
 
     - name: Publish nuget package
-      run: find . -name *.nupkg -type f -print0 | xargs -0 -I pkg dotnet nuget push pkg -k $nuget_api_key -s "https://api.nuget.org/v3/index.json" --skip-duplicate
+      run: find . -name *.nupkg -type f -print0 | xargs -0 -I pkg dotnet nuget push pkg -k $nuget_api_key -s "https://api.nuget.org/v3/index.json"
       env:
         nuget_api_key: ${{ secrets.NUGET_API_KEY }}
