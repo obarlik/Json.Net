@@ -13,7 +13,7 @@
     <PackageReleaseNotes>@McTopaz Issue fixed: Serialize anonymous object containing an IP-address, an int and an enum #6
 @lizelive Issue fixed: 100% more gender (#7)</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
-    <RepositoryType>Github</RepositoryType>
+    <RepositoryType>Git</RepositoryType>
     <Version>1.0.21</Version>
     <AssemblyVersion>1.0.21.1</AssemblyVersion>
     <FileVersion>1.0.21.1</FileVersion>
