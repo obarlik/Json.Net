@@ -25,4 +25,4 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
 
     - name: Push to GitHub package registry
-      run: nuget push **/*.nupkg -api-key ${{secrets.NUGET_API_KEY}} -source https://api.nuget.org/v3/index.json
+      run: nuget push **/*.nupkg -apikey ${{secrets.NUGET_API_KEY}} -source https://api.nuget.org/v3/index.json
