@@ -19,7 +19,7 @@
     <AssemblyVersion>1.0.22.1</AssemblyVersion>
     <FileVersion>1.0.22.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>    
     <Copyright />
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
