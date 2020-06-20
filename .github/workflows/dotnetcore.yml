@@ -26,5 +26,8 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
 
+    - name: Generate package
+      run: dotnet pack --configuration Release
+
     - name: Push to GitHub package registry
-      run: nuget push **/*.nupkg -source https://api.nuget.org/v3/index.json -SkipDuplicate -NoSymbols
+      run: dotnet nuget push **/*.nupkg --source "github"
