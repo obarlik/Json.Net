@@ -94,7 +94,7 @@ namespace Json.Net
 
                 while (NextChar!='}')
                 {
-                    var name = (string)FromJson(nameType);
+                    var name = FromJson(nameType);
 
                     SkipWhite();
                     Match(":");
@@ -110,7 +110,7 @@ namespace Json.Net
                             string memberName = map.Members[i].Name;
                             if (PropertyNameTransform != null)
                                 memberName = PropertyNameTransform.Transform(memberName);
-                            if (memberName == name)
+                            if (memberName == name.ToString())
                             {
                                 field = map.Members[i];
                                 break;
@@ -260,7 +260,14 @@ namespace Json.Net
                  || type == typeof(TimeSpan?))
                     return TimeSpan.Parse((string)result, CultureInfo.InvariantCulture);
 
-                return result;
+                try
+                {
+                    return Convert.ChangeType(result, type);
+                }
+                catch
+                {
+                    throw new FormatException($"'{result}' cannot be converted to {type.Name}");
+                }
             }
             else if (NextChar == 't')
             {

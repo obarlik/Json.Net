@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Json.Net.Tests
@@ -72,6 +73,22 @@ namespace Json.Net.Tests
 
             var json = JsonNet.Serialize(new TestBug003Configuration(), converter);
             Assert.Pass();
+        }
+
+
+
+
+
+        [Test]
+        public void TestBug004()
+        {
+            var dict_test = new Dictionary<int, string>();
+            dict_test.Add(1, "hello");
+            var serialized_json = JsonNet.Serialize(dict_test);
+            Console.WriteLine(serialized_json);//Output: {"1","hello"}
+            var dict_new = JsonNet.Deserialize<Dictionary<int, string>>(serialized_json);//throws exception
+
+            Assert.AreEqual(dict_test, dict_new);
         }
     }
 }
