@@ -30,7 +30,7 @@ jobs:
       run: dotnet pack --configuration Release
 
     - name: Add Nuget repository
-      run: dotnet nuget source Add -Name "github" -Source "https://nuget.pkg.github.com/obarlik/index.json"
+      run: dotnet nuget add source --name "github" "https://nuget.pkg.github.com/obarlik/index.json"
 
     - name: Push to GitHub package registry      
       run: dotnet nuget push **/*.nupkg --source "github" --api-key "${{ secrets.GITHUB_TOKEN }}"
