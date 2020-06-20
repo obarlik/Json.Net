@@ -4,18 +4,27 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
+
     - uses: actions/checkout@v1
+    
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.2
+      with:
+        nuget-api-key: ${{secrets.NUGET_API_KEY}}
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.207
+
     - name: Build with dotnet
       run: dotnet build --configuration Release
+
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+
+    - name: Push to GitHub package registry
+      run: nuget push **/*.nupkg -source https://api.nuget.org/v3/index.json -SkipDuplicate -NoSymbols
