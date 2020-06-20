@@ -74,6 +74,9 @@ namespace Json.Net
 
             if (NextChar == '{')
             {
+                if (type == null)
+                    type = typeof(object);
+                
                 ReadNext();
                 SkipWhite();
 
@@ -107,9 +110,11 @@ namespace Json.Net
                     {
                         for (var i = mIndex; i < map.Members.Length; i++)
                         {
-                            string memberName = map.Members[i].Name;
+                            var memberName = map.Members[i].Name;
+
                             if (PropertyNameTransform != null)
                                 memberName = PropertyNameTransform.Transform(memberName);
+                            
                             if (memberName == name.ToString())
                             {
                                 field = map.Members[i];
@@ -120,15 +125,22 @@ namespace Json.Net
 
                     var fieldType = field == null ? valueType : field.ValueType;
 
-                    var value = FromJson(fieldType);
-
-                    if (field != null)
+                    if (fieldType == null)
                     {
-                        field.SetValue(result, value);
+                        _ = FromJson(fieldType);
                     }
                     else
                     {
-                        ((IDictionary)result).Add(name, value);
+                        var value = FromJson(fieldType);
+
+                        if (field != null)
+                        {
+                            field.SetValue(result, value);
+                        }
+                        else
+                        {
+                            ((IDictionary)result).Add(name, value);
+                        }
                     }
 
                     SkipWhite();
@@ -150,6 +162,9 @@ namespace Json.Net
 
             if (NextChar == '[')
             {
+                if (type == null)
+                    type = typeof(object[]);
+                
                 ReadNext();
                 SkipWhite();
 
@@ -193,6 +208,9 @@ namespace Json.Net
 
             if (NextChar == '"')
             {
+                if (type == null)
+                    type = typeof(string);
+                
                 ReadNext();
 
                 while (!EndOfStream && NextChar != '"')
@@ -291,6 +309,9 @@ namespace Json.Net
             }
             else if (NextChar == '-' || IsDigit)
             {
+                if (type == null)
+                    type = typeof(double);
+                
                 if (NextChar == '-')
                 {
                     text.Append('-');

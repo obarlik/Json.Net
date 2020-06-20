@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace Json.Net.Tests
 {
@@ -143,5 +144,46 @@ namespace Json.Net.Tests
             Assert.Pass();
         }
         
+
+        
+
+        class TestClass005
+        {
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+
+            [JsonNetIgnore]
+            public string SecurityKey { get; set; }
+
+            public string NickName { get; set; }
+        }
+
+
+        [Test]
+        // Issue 9
+        public void JsonNetIgnoreAttributeTest()
+        {
+            var test_object = new TestClass005
+            {
+                Id = 81,
+                Name = "Tester 005",
+                SecurityKey = "Top Secret",
+                NickName = "Superman"
+            };
+
+            var json_text = JsonNet.Serialize(test_object);
+
+            Assert.AreEqual(json_text, "{\"Id\":81,\"Name\":\"Tester 005\",\"NickName\":\"Superman\"}");
+
+            json_text = "{\"Id\":81,\"Name\":\"Tester 005\",\"SecurityKey\":\"Top Secret\",\"NickName\":\"Superman\"}";
+
+            var test_object2 = JsonNet.Deserialize<TestClass005>(json_text);
+
+            Assert.AreEqual(test_object.Id, test_object2.Id);
+            Assert.AreEqual(test_object.Name, test_object2.Name);
+            Assert.AreNotEqual(test_object.SecurityKey, test_object2.SecurityKey);
+            Assert.AreEqual(test_object.NickName, test_object2.NickName);
+        }
     }
 }

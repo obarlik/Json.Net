@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -31,7 +32,13 @@ namespace Json.Net
                       (_GlobalMaps = new SerializerMap[0]);
             }
         }
-    
+
+        string[] IgnoredAttributes = new[] {
+            "JsonIgnoreAttribute",
+            "JsonNetIgnoreAttribute",
+            "NonSerializedAttribute",
+            "XmlIgnoreAttribute"
+        };
 
         public SerializerMap(Type type)
         {
@@ -41,7 +48,10 @@ namespace Json.Net
                 type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
                 .Where(m => m.MemberType == MemberTypes.Field
                          || (m.MemberType == MemberTypes.Property
-                             && type.GetProperty(m.Name).CanRead))
+                             && type.GetProperty(m.Name).CanRead
+                             && !m.GetCustomAttributes().Select(a=>a.GetType().Name)
+                                .Intersect(IgnoredAttributes)
+                                .Any()))
                 .Select(m =>
                     m.MemberType == MemberTypes.Property ?
                     new MemberAccessor
