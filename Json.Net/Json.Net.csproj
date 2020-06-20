@@ -15,7 +15,7 @@
 @cleverkom-twarnick Feature #6: Added JsonNetIgnoreAttribute, and provided supportt for existing ignore attributes (JsonIgnore, JsonIgnore, NonSerialized, XmlIgnore)</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.22</Version>
+    <Version>1.0.23</Version>
     <AssemblyVersion>1.0.23.1</AssemblyVersion>
     <FileVersion>1.0.23.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
