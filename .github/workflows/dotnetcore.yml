@@ -19,7 +19,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.207
-
+        source-url: https://nuget.pkg.github.com/obarlik/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
@@ -29,10 +32,5 @@ jobs:
     - name: Generate package
       run: dotnet pack --configuration Release
 
-    - name: Add Nuget repository
-      run: dotnet nuget add source --name "github" "https://nuget.pkg.github.com/obarlik/index.json"
-
     - name: Push to GitHub package registry      
-      run: dotnet nuget push **/*.nupkg --source "github" --api-key "${{ secrets.GITHUB_TOKEN }}"
-      
-      
+      run: dotnet nuget push **/*.nupkg --source "github"
