@@ -2,24 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <PackageId>Json.Net</PackageId>
+    <PackageId>Json.Net.Core</PackageId>
     <Authors>Onur Barlık</Authors>
     <Company>Codechu</Company>
-    <Description>A minimalistic JSON handler library.</Description>
+    <Description>A minimalistic JSON handler library for latest .NET release</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
-    <PackageReleaseNotes>
-      @mircoboschi Issue #8: Dictionary&lt;int,*&gt; Serialization/Deserialization issue is fixed now
-
-      @cleverkom-twarnick Feature #6: Added JsonNetIgnoreAttribute, and provided supportt for existing ignore attributes (JsonIgnore, JsonIgnore, NonSerialized, XmlIgnore)
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>- Same notes as Json.Net but with latest .NET library support</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.23</Version>
-    <AssemblyVersion>1.0.23.1</AssemblyVersion>
-    <FileVersion>1.0.23.1</FileVersion>
+    <Version>1.0.24</Version>
+    <AssemblyVersion>1.0.24.1</AssemblyVersion>
+    <FileVersion>1.0.24.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <Copyright />
