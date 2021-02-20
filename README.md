@@ -1,7 +1,7 @@
-# Json.Net
+# Json.Net & Json.Net.Core
 A minimalistic JSON handler library. 
 
-Framework : .NET Standard 2.0
+Framework : .NET Standard 2.0 & .NET 5.0
 
 
 ## Usage instructions
