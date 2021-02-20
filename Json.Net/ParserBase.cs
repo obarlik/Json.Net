@@ -45,6 +45,7 @@ namespace Json.Net
         {
             EndOfStream = false;
             BufferIndex = -1;
+            _Stream = _ReadNext().GetEnumerator();
             ReadNext();
             return this;
         }
@@ -66,33 +67,43 @@ namespace Json.Net
         }
 
 
+        IEnumerator<char> _Stream;
 
-        protected void ReadNext()
+        protected char ReadNext()
+        {
+            _Stream.MoveNext();
+            return NextChar = _Stream.Current;
+        }
+
+
+        IEnumerable<char> _ReadNext()
         {
             if (EndOfStream)
-                return;
+                yield break;
 
-            if (++BufferIndex < Buffer.Length)
+            if (Reader == null)
             {
-                NextChar = Buffer[BufferIndex];
-                return;
+                while (++BufferIndex < Buffer.Length)
+                    yield return Buffer[BufferIndex];
             }
-
-            if (Reader != null)
+            else 
             {
-                var read = Reader.ReadBlock(ReaderBuffer, 0, ReaderBuffer.Length);
+                while (true)
+                {
+                    var read = Reader.ReadBlock(ReaderBuffer, 0, ReaderBuffer.Length);
 
-                Buffer = new string(ReaderBuffer, 0, read);
-                BufferIndex = 0;
+                    Buffer = new string(ReaderBuffer, 0, read);
+                    BufferIndex = -1;
 
-                if (read > 0)
-                    return;
+                    while (read-- > 0)
+                        yield return Buffer[++BufferIndex];
+                }
             }
 
             Buffer = "";
             BufferIndex = 0;
             EndOfStream = true;
-            NextChar = EOF;
+            yield return EOF;
         }
 
 

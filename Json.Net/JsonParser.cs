@@ -74,8 +74,8 @@ namespace Json.Net
 
             if (NextChar == '{')
             {
-                if (type == null)
-                    type = typeof(object);
+                if (type == null || type == typeof(object))
+                    type = typeof(Dictionary<string, object>);
                 
                 ReadNext();
                 SkipWhite();
@@ -114,8 +114,10 @@ namespace Json.Net
 
                             if (PropertyNameTransform != null)
                                 memberName = PropertyNameTransform.Transform(memberName);
-                            
-                            if (memberName == name.ToString())
+
+                            var tName = name.ToString();
+
+                            if (memberName == tName || memberName.Equals(tName, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 field = map.Members[i];
                                 break;
@@ -162,7 +164,7 @@ namespace Json.Net
 
             if (NextChar == '[')
             {
-                if (type == null)
+                if (type == null || type == typeof(object))
                     type = typeof(object[]);
                 
                 ReadNext();
@@ -175,7 +177,7 @@ namespace Json.Net
                         type.GenericTypeArguments[0] :
                         typeof(object);
 
-                var list =
+                var list = 
                     type.IsArray ?
                         new ArrayList() :
                         (IList)Activator.CreateInstance(type);
@@ -208,7 +210,7 @@ namespace Json.Net
 
             if (NextChar == '"')
             {
-                if (type == null)
+                if (type == null || type == typeof(object))
                     type = typeof(string);
                 
                 ReadNext();
@@ -301,6 +303,9 @@ namespace Json.Net
             {
                 Match("null");
 
+                if (type == null)
+                    type = typeof(object);
+
                 if (!(type.IsClass
                    || Nullable.GetUnderlyingType(type) != null))
                     throw new InvalidDataException("Type " + type.Name + "'s value cannot be null!");
@@ -309,7 +314,7 @@ namespace Json.Net
             }
             else if (NextChar == '-' || IsDigit)
             {
-                if (type == null)
+                if (type == null || type == typeof(object))
                     type = typeof(double);
                 
                 if (NextChar == '-')

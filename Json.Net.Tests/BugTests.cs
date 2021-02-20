@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 
@@ -89,6 +90,23 @@ namespace Json.Net.Tests
             var dict_new = JsonNet.Deserialize<Dictionary<int, string>>(serialized_json);//throws exception
 
             Assert.AreEqual(dict_test, dict_new);
+        }
+
+
+        public class ApiResult
+        {
+            public object Data { get; set; }
+            public string Code { get; set; }
+        }
+
+        [Test]
+        public void TestIEnumerableDeserialization()
+        {
+            var json = "{\"data\":{\"data\":[\"a\", 1, true],\"totalCount\":-1,\"groupCount\":-1,\"summary\":null},\"code\":\"OK\",\"ok\":true}";
+
+            var result = JsonNet.Deserialize<ApiResult>(json);
+
+            Assert.NotNull(result.Data);
         }
 
     }

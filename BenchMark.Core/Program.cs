@@ -76,7 +76,7 @@ namespace BenchMark
 
         static void Main(string[] args)
         {
-            var iterCount = 100000;
+            var iterCount = 10000;
 
             if (args.Count() > 0)
                 int.TryParse(args[0], out iterCount);
@@ -129,6 +129,7 @@ namespace BenchMark
                 {
                     listJson = bench.Serialize(pets);
                 })
+                .Skip(10) // Warm up
                 .Take(iterCount)
                 .ToArray();
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
@@ -10,6 +10,8 @@
     <StartupObject></StartupObject>
 
     <Platforms>AnyCPU;x64</Platforms>
+
+    <Configurations>Debug;Release;Benchmark</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

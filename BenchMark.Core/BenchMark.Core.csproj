@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Benchmark</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Json.Net\Json.Net.csproj" />
+    <ProjectReference Include="..\Json.Net.Core\Json.Net.Core.csproj" />
   </ItemGroup>
 
 </Project>

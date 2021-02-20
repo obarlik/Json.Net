@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Json.Net</PackageId>
+    <Authors>Onur Barlık</Authors>
+    <Company>Codechu</Company>
+    <Description>A minimalistic JSON handler library.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/obarlik/Json.Net/wiki/Json.Net's-Home</PackageProjectUrl>
+    <PackageTags>json, jsonnet, minimalistic</PackageTags>
+    <PackageReleaseNotes>
+      @mircoboschi Issue #8: Dictionary&lt;int,*&gt; Serialization/Deserialization issue is fixed now
+
+      @cleverkom-twarnick Feature #6: Added JsonNetIgnoreAttribute, and provided supportt for existing ignore attributes (JsonIgnore, JsonIgnore, NonSerialized, XmlIgnore)
+    </PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <Version>1.0.23</Version>
+    <AssemblyVersion>1.0.23.1</AssemblyVersion>
+    <FileVersion>1.0.23.1</FileVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <Copyright />
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Benchmark</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Json.Net\IJsonConverter.cs" Link="IJsonConverter.cs" />
+    <Compile Include="..\Json.Net\IPropertyNameTransform.cs" Link="IPropertyNameTransform.cs" />
+    <Compile Include="..\Json.Net\JsonConverter.cs" Link="JsonConverter.cs" />
+    <Compile Include="..\Json.Net\JsonNet.cs" Link="JsonNet.cs" />
+    <Compile Include="..\Json.Net\JsonNetIgnoreAttribute.cs" Link="JsonNetIgnoreAttribute.cs" />
+    <Compile Include="..\Json.Net\JsonParser.cs" Link="JsonParser.cs" />
+    <Compile Include="..\Json.Net\JsonSerializer.cs" Link="JsonSerializer.cs" />
+    <Compile Include="..\Json.Net\ParserBase.cs" Link="ParserBase.cs" />
+    <Compile Include="..\Json.Net\Pet.cs" Link="Pet.cs" />
+    <Compile Include="..\Json.Net\PropertyNameTransforms.cs" Link="PropertyNameTransforms.cs" />
+    <Compile Include="..\Json.Net\SerializationOptions.cs" Link="SerializationOptions.cs" />
+    <Compile Include="..\Json.Net\SerializerMap.cs" Link="SerializerMap.cs" />
+    <Compile Include="..\Json.Net\TitleToCamelCase.cs" Link="TitleToCamelCase.cs" />
+  </ItemGroup>
+
+</Project>

@@ -126,6 +126,7 @@ namespace BenchMark
                 {
                     listJson = bench.Serialize(pets);
                 })
+                .Skip(10) // Warm up
                 .Take(iterCount)
                 .ToArray();
 
