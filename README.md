@@ -1,8 +1,9 @@
 # Json.Net & Json.Net.Core
 A minimalistic JSON handler library. 
 
-Framework : .NET Standard 2.0 & .NET 5.0
+Json.Net (.NET Standard 2.0) : https://www.nuget.org/packages/Json.Net/
 
+Json.Net.Core (.NET 5.0) :https://www.nuget.org/packages/Json.Net.Core/
 
 ## Usage instructions
 Define a POCO class...
