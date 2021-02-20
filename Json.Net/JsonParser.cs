@@ -137,7 +137,14 @@ namespace Json.Net
 
                         if (field != null)
                         {
-                            field.SetValue(result, value);
+                            try
+                            {
+                                field.SetValue(result, value);
+                            }
+                            catch
+                            {
+                                // TODO: Cannot set, ignore for now
+                            }
                         }
                         else
                         {

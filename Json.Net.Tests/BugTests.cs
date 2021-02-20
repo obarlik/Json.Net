@@ -97,6 +97,8 @@ namespace Json.Net.Tests
         {
             public object Data { get; set; }
             public string Code { get; set; }
+
+            public bool OK => Code == "OK";
         }
 
         [Test]
