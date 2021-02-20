@@ -12,12 +12,13 @@
     <PackageTags>json, jsonnet, minimalistic</PackageTags>
     <PackageReleaseNotes>- Added case ignorant deserialization
 - Added support for IEnumerable deserialization
-- Performance tweaks</PackageReleaseNotes>
+- Performance tweaks
+- Unsettable property bugfix</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <Version>1.0.24</Version>
-    <AssemblyVersion>1.0.24.1</AssemblyVersion>
-    <FileVersion>1.0.24.1</FileVersion>
+    <AssemblyVersion>1.0.25.1</AssemblyVersion>
+    <FileVersion>1.0.25.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>    
     <Copyright />
