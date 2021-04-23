@@ -184,10 +184,14 @@ namespace Json.Net
                         type.GenericTypeArguments[0] :
                         typeof(object);
 
-                var list = 
-                    type.IsArray ?
-                        new ArrayList() :
-                        (IList)Activator.CreateInstance(type);
+                IList list;
+
+                if (type.IsArray)
+                    list = new ArrayList();
+                else if (type == typeof(IEnumerable))
+                    list = new List<object>();
+                else
+                    list = (IList)Activator.CreateInstance(type);
 
                 while (NextChar != ']')
                 {

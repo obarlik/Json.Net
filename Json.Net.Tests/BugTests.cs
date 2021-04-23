@@ -110,6 +110,28 @@ namespace Json.Net.Tests
             Assert.AreEqual(bug005.Id, newBug005.Id);
         }
 
+        class Bug006
+        {
+            public IEnumerable data { get; set; }
+        }
+
+        [Test]
+        public void TestBug006()
+        {
+            var bug006 = new Bug006 {
+                data = new[] { 1, 2 }
+            };
+
+            var serialized_json = JsonNet.Serialize(bug006);
+
+            var newBug006 = JsonNet.Deserialize<Bug006>(serialized_json);//throws exception
+
+            Assert.True(true);
+        }
+
+
+
+
         public class ApiResult
         {
             public object Data { get; set; }
