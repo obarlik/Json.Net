@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -44,31 +45,37 @@ namespace Json.Net
         {
             ObjectType = type;
 
-            Members =
-                type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
-                .Where(m => m.MemberType == MemberTypes.Field
-                         || (m.MemberType == MemberTypes.Property
-                             && type.GetProperty(m.Name).CanRead
-                             && !m.GetCustomAttributes().Select(a=>a.GetType().Name)
-                                .Intersect(IgnoredAttributes)
-                                .Any()))
-                .Select(m =>
-                    m.MemberType == MemberTypes.Property ?
-                    new MemberAccessor
-                    {
-                        Name = m.Name,
-                        ValueType = ((PropertyInfo)m).PropertyType,
-                        GetValue = ((PropertyInfo)m).GetValue,
-                        SetValue = ((PropertyInfo)m).SetValue
-                    }:
-                    new MemberAccessor
-                    {
-                        Name = m.Name,
-                        ValueType = ((FieldInfo)m).FieldType,
-                        GetValue = ((FieldInfo)m).GetValue,
-                        SetValue = ((FieldInfo)m).SetValue
-                    })
-                .ToArray();
+            if (type == typeof(object)
+             || type == typeof(ExpandoObject))
+            {
+                Members = new MemberAccessor[0];                
+            }
+            else
+                Members =
+                    type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(m => m.MemberType == MemberTypes.Field
+                             || (m.MemberType == MemberTypes.Property
+                                 && type.GetProperty(m.Name).CanRead
+                                 && !m.GetCustomAttributes().Select(a => a.GetType().Name)
+                                    .Intersect(IgnoredAttributes)
+                                    .Any()))
+                    .Select(m =>
+                        m.MemberType == MemberTypes.Property ?
+                        new MemberAccessor
+                        {
+                            Name = m.Name,
+                            ValueType = ((PropertyInfo)m).PropertyType,
+                            GetValue = ((PropertyInfo)m).GetValue,
+                            SetValue = ((PropertyInfo)m).SetValue
+                        } :
+                        new MemberAccessor
+                        {
+                            Name = m.Name,
+                            ValueType = ((FieldInfo)m).FieldType,
+                            GetValue = ((FieldInfo)m).GetValue,
+                            SetValue = ((FieldInfo)m).SetValue
+                        })
+                    .ToArray();
         }
         
 
@@ -88,7 +95,7 @@ namespace Json.Net
 
                         foreach (var t in result.Members
                                           .Select(v => v.ValueType)
-                                          .Where(t => t != typeof(string) 
+                                          .Where(t => t != typeof(string)
                                                    && (t.IsClass || (t.IsValueType && !t.IsPrimitive)))
                                           .Except(GlobalMaps.Select(m => m.ObjectType))
                                           .Distinct())

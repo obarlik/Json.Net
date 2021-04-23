@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -108,7 +109,7 @@ namespace Json.Net
                 {
                     cnv = strConverter;
                 }
-                else if (obj is IEnumerable)
+                else if (obj is IEnumerable && !(obj is ExpandoObject))
                 {
                     Write(obj is IDictionary ? "{" : "[");
 
@@ -184,8 +185,17 @@ namespace Json.Net
 
                     var first = true;
 
-                    foreach (var m in SerializerMap.GetSerializerMap(objectType)
-                                      .Members)
+                    var map = SerializerMap.GetSerializerMap(objectType);
+
+                    var members = map.Members;
+
+                    if (members.Length == 0)
+                        members = ((ExpandoObject)obj as IDictionary<string, object>)
+                            .Keys
+                            .Select(m => GetFieldAccessorFor(m))
+                            .ToArray();
+                    
+                    foreach (var m in members)
                     {
                         if (first)
                             first = false;
@@ -230,5 +240,15 @@ namespace Json.Net
 
             Write(cnv(obj));
         }
+
+
+        private MemberAccessor GetFieldAccessorFor(string fieldName)
+        => new MemberAccessor
+        {
+            Name = fieldName,
+            ValueType = typeof(ExpandoObject),
+            GetValue = o => (((ExpandoObject)o) as IDictionary<string, object>)[fieldName],
+            SetValue = (o, v) => (((ExpandoObject)o) as IDictionary<string, object>)[fieldName] = v,
+        };
     }
 }

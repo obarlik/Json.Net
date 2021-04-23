@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
-
+using System.Dynamic;
 
 namespace Json.Net
 {
@@ -74,8 +74,8 @@ namespace Json.Net
 
             if (NextChar == '{')
             {
-                if (type == null || type == typeof(object))
-                    type = typeof(Dictionary<string, object>);
+                if (type == null || type == typeof(object) || type == typeof(ExpandoObject))
+                    type = typeof(ExpandoObject);
                 
                 ReadNext();
                 SkipWhite();
@@ -108,21 +108,24 @@ namespace Json.Net
 
                     if (valueType == null)
                     {
-                        for (var i = mIndex; i < map.Members.Length; i++)
-                        {
-                            var memberName = map.Members[i].Name;
-
-                            if (PropertyNameTransform != null)
-                                memberName = PropertyNameTransform.Transform(memberName);
-
-                            var tName = name.ToString();
-
-                            if (memberName == tName || memberName.Equals(tName, StringComparison.InvariantCultureIgnoreCase))
+                        if (map.Members.Length == 0)
+                            field = GetFieldAccessorFor(name.ToString());
+                        else
+                            for (var i = mIndex; i < map.Members.Length; i++)
                             {
-                                field = map.Members[i];
-                                break;
+                                var memberName = map.Members[i].Name;
+
+                                if (PropertyNameTransform != null)
+                                    memberName = PropertyNameTransform.Transform(memberName);
+
+                                var tName = name.ToString();
+
+                                if (memberName == tName || memberName.Equals(tName, StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    field = map.Members[i];
+                                    break;
+                                }
                             }
-                        }
                     }
 
                     var fieldType = field == null ? valueType : field.ValueType;
@@ -171,7 +174,7 @@ namespace Json.Net
 
             if (NextChar == '[')
             {
-                if (type == null || type == typeof(object))
+                if (type == null || type == typeof(object) || type == typeof(ExpandoObject))
                     type = typeof(object[]);
                 
                 ReadNext();
@@ -182,7 +185,7 @@ namespace Json.Net
                         type.GetElementType() :
                     type.IsGenericType ?
                         type.GenericTypeArguments[0] :
-                        typeof(object);
+                        typeof(ExpandoObject);
 
                 IList list;
 
@@ -405,7 +408,20 @@ namespace Json.Net
             throw new FormatException("Unexpected character! " + NextChar);
         }
 
+        private MemberAccessor GetFieldAccessorFor(string fieldName)
+        {
+            var tName = fieldName.ToString();
 
+            if (PropertyNameTransform != null)
+                tName = PropertyNameTransform.Transform(tName);
 
+            return new MemberAccessor
+            {
+                Name = tName,
+                ValueType = typeof(ExpandoObject),
+                GetValue = o => (((ExpandoObject)o) as IDictionary<string, object>)[tName],
+                SetValue = (o, v) => (((ExpandoObject)o) as IDictionary<string, object>)[tName] = v,
+            };
+        }
     }
 }
