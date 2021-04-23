@@ -193,8 +193,8 @@ namespace Json.Net
                     list = new ArrayList();
                 else if (type == typeof(IEnumerable))
                     list = new List<object>();
-                else
-                    list = (IList)Activator.CreateInstance(type);
+                else 
+                    list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
 
                 while (NextChar != ']')
                 {

@@ -113,13 +113,16 @@ namespace Json.Net.Tests
         class Bug006
         {
             public IEnumerable data { get; set; }
+            public IEnumerable<string> data2 { get; set; }
         }
 
         [Test]
         public void TestBug006()
         {
-            var bug006 = new Bug006 {
-                data = new[] { 1, 2 }
+            var bug006 = new Bug006
+            {
+                data = new[] { 1, 2 },
+                data2 = new[] { "a", "b" }
             };
 
             var serialized_json = JsonNet.Serialize(bug006);
