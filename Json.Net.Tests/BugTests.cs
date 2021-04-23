@@ -93,6 +93,23 @@ namespace Json.Net.Tests
         }
 
 
+        class Bug005
+        {
+            public Guid Id { get; set; }
+        }
+
+        [Test]
+        public void TestBug005()
+        {
+            var bug005 = new Bug005 { Id = Guid.NewGuid() };
+
+            var serialized_json = JsonNet.Serialize(bug005);
+
+            var newBug005 = JsonNet.Deserialize<Bug005>(serialized_json);//throws exception
+
+            Assert.AreEqual(bug005.Id, newBug005.Id);
+        }
+
         public class ApiResult
         {
             public object Data { get; set; }

@@ -131,6 +131,10 @@ namespace Json.Net
                 {
                     cnv = b => (bool)b ? "true" : "false";
                 }
+                else if (obj is Guid || obj is Guid?)
+                {
+                    cnv = g => strConverter(((Guid)g).ToString());
+                }
                 else if (obj is int || obj is int?
                  || obj is short || obj is short?
                  || obj is long || obj is long?

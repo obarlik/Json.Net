@@ -287,6 +287,10 @@ namespace Json.Net
                  || type == typeof(TimeSpan?))
                     return TimeSpan.Parse((string)result, CultureInfo.InvariantCulture);
 
+                if (type == typeof(Guid)
+                 || type == typeof(Guid?))
+                    return Guid.Parse((string)result);
+
                 try
                 {
                     return Convert.ChangeType(result, type);
