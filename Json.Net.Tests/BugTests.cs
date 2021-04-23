@@ -143,8 +143,7 @@ namespace Json.Net.Tests
         [Test]
         public void TestIEnumerableDeserialization()
         {
-            var json = "{\"Data\":{\"Data\":[\"a\",1,true],\"totalCount\":-1,\"groupCount\":-1,\"summary\":null},\"Code\":\"OK\",\"OK\":true}";
-
+            var json = "{\"Data\":{\"Data\":[\"a\",1,true],\"totalCount\":-1,\"groupCount\":-1,\"summary\":\"summary text\"},\"Code\":\"OK\",\"OK\":true}";
             var result = JsonNet.Deserialize<ApiResult>(json);
 
             var newJson = JsonNet.Serialize(result);

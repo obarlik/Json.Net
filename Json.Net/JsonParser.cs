@@ -185,7 +185,7 @@ namespace Json.Net
                         type.GetElementType() :
                     type.IsGenericType ?
                         type.GenericTypeArguments[0] :
-                        typeof(ExpandoObject);
+                        typeof(object);
 
                 IList list;
 
@@ -224,7 +224,7 @@ namespace Json.Net
 
             if (NextChar == '"')
             {
-                if (type == null || type == typeof(object))
+                if (type == null || type == typeof(object) || type == typeof(ExpandoObject))
                     type = typeof(string);
                 
                 ReadNext();
