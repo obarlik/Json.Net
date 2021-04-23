@@ -13,9 +13,9 @@
     <PackageReleaseNotes>- Same notes as Json.Net but with latest .NET library support</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.28</Version>
-    <AssemblyVersion>1.0.28.1</AssemblyVersion>
-    <FileVersion>1.0.28.1</FileVersion>
+    <Version>1.0.29</Version>
+    <AssemblyVersion>1.0.29.1</AssemblyVersion>
+    <FileVersion>1.0.29.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <Copyright />
