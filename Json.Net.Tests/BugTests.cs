@@ -133,6 +133,36 @@ namespace Json.Net.Tests
         }
 
 
+        [Flags]
+        enum Bug007Status
+        {
+            V1 = 1,
+            V2 = 2,
+            V3 = 4
+        }
+
+        class Bug007
+        {
+            public bool? vBool { get; set; }
+            public Bug007Status? status { get; set; }
+        }
+
+        [Test]
+        public void TestBug007()
+        {
+            var bug007 = new Bug007
+            {
+                status = Bug007Status.V1 | Bug007Status.V2,
+                vBool = true
+            };
+
+            var serialized_json = JsonNet.Serialize(bug007);
+
+            var newBug007 = JsonNet.Deserialize<Bug007>(serialized_json);//throws exception
+
+            Assert.AreEqual(bug007.vBool, newBug007.vBool);
+            Assert.AreEqual(bug007.status, newBug007.status);
+        }
 
 
         public class ApiResult

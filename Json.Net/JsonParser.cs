@@ -393,8 +393,17 @@ namespace Json.Net
 
                 var inv = CultureInfo.InvariantCulture;
 
-                if (type.IsEnum
-                 || type == typeof(int)
+                if (type.IsGenericType
+                    && type.IsValueType
+                    && Nullable.GetUnderlyingType(type).IsEnum)
+                {
+                    type = Nullable.GetUnderlyingType(type);
+                }
+
+                if (type.IsEnum)
+                    return Enum.Parse(type, t);
+                
+                if (type == typeof(int)
                  || type == typeof(int?))
                     return int.Parse(t, inv);
 
