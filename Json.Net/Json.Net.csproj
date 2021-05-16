@@ -19,9 +19,9 @@
 - Interface null deserialization bugfix</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/obarlik/Json.Net.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <Version>1.0.32</Version>
-    <AssemblyVersion>1.0.32.1</AssemblyVersion>
-    <FileVersion>1.0.32.1</FileVersion>
+    <Version>1.0.33</Version>
+    <AssemblyVersion>1.0.33.1</AssemblyVersion>
+    <FileVersion>1.0.33.1</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>    
     <Copyright />
