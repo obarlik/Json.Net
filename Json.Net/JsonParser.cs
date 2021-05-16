@@ -325,6 +325,7 @@ namespace Json.Net
                     type = typeof(object);
 
                 if (!(type.IsClass
+                   || type.IsInterface
                    || Nullable.GetUnderlyingType(type) != null))
                     throw new InvalidDataException("Type " + type.Name + "'s value cannot be null!");
 
