@@ -1,6 +1,8 @@
 # Json.Net & Json.Net.Core
 A minimalistic JSON handler library. 
 
+[![.NET Core](https://github.com/obarlik/Json.Net/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/obarlik/Json.Net/actions/workflows/dotnetcore.yml)
+
 Json.Net (.NET Standard 2.0) :  https://www.nuget.org/packages/Json.Net/
 
 Json.Net.Core (.NET 5.0) :  https://www.nuget.org/packages/Json.Net.Core/
