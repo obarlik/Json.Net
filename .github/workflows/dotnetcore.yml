@@ -15,13 +15,13 @@ jobs:
         dotnet-version: 2.2.207
     
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build ./<project>/Json.Net/*.csproj --configuration Release
 
     - name: Test
-      run: dotnet test --no-build --no-restore --verbosity normal
+      run: dotnet test ./<project>/Json.Net.Tests/*.csproj --verbosity normal
 
     - name: Generate package
-      run: dotnet pack --no-build --configuration Release -o out
+      run: dotnet pack ./<project>/Json.Net/Json.Net.csproj --no-build -o out
       
     - name: Push generated package to GitHub registry
       run: dotnet nuget push ./<project>/out/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true
