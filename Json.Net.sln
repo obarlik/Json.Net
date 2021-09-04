@@ -18,6 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Net.Core", "Json.Net.Core\Json.Net.Core.csproj", "{3F3151BD-57DD-4C9D-B681-909B4C3411B0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Library", "01 Library", "{42E3B8E4-D938-4E7C-B051-A3D3A058B8E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 BenchMarks", "03 BenchMarks", "{807DC0DF-AB24-444A-87FB-1A6E5D5FB08D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Tests", "02 Tests", "{B76C9222-036E-4C66-8D8E-F3792A002148}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Benchmark|Any CPU = Benchmark|Any CPU
@@ -86,6 +92,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95B4423D-8A9B-4EF1-99C3-2BDBFAD6C01E} = {42E3B8E4-D938-4E7C-B051-A3D3A058B8E0}
+		{C92CA987-7ABF-4433-9BEC-AB4AEF006141} = {B76C9222-036E-4C66-8D8E-F3792A002148}
+		{24E453F5-9350-4D7F-98DE-B6E3EE8C4A40} = {807DC0DF-AB24-444A-87FB-1A6E5D5FB08D}
+		{02B25976-2D7F-49FC-A854-DE6BEABE5985} = {807DC0DF-AB24-444A-87FB-1A6E5D5FB08D}
+		{3F3151BD-57DD-4C9D-B681-909B4C3411B0} = {42E3B8E4-D938-4E7C-B051-A3D3A058B8E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1677376-E07F-42C5-B07B-EFE5FD837D24}
