@@ -21,7 +21,7 @@ jobs:
     
     - name: Build with dotnet
       run: dotnet build ./Json.Net/*.csproj --configuration Release |
-           dotnet build ./Json.Net.Core/*.csproj --configuration Release |
+           dotnet build ./Json.Net.Core/*.csproj --configuration Release
 
     - name: Test
       run: dotnet test ./Json.Net.Tests/*.csproj --verbosity normal
