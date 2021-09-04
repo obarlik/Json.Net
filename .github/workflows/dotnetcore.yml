@@ -10,14 +10,14 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.8.1
       with:
         dotnet-version: 2.2.207
     
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.8.1
       with:
-        dotnet-version: 5
+        dotnet-version: 5.0
     
     - name: Build with dotnet
       run: dotnet build ./Json.Net/*.csproj --configuration Release
