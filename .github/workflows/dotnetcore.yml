@@ -1,29 +1,38 @@
-name: .NET Core
+name: Package
 
-on: [push]
+on: [workflow_dispatch]
+
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Setup NuGet.exe for use with actions
-      uses: NuGet/setup-nuget@v1.0.2
-      with:
-        nuget-api-key: ${{secrets.NUGET_API_KEY}}
-    
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET Core 2.2.207
+      uses: actions/setup-dotnet@v1.8.1
       with:
         dotnet-version: 2.2.207
     
+    - name: Setup .NET Core 5.0.x
+      uses: actions/setup-dotnet@v1.8.1
+      with:
+        dotnet-version: 5.0.x
+    
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build ./Json.Net/*.csproj --configuration Release |
+           dotnet build ./Json.Net.Core/*.csproj --configuration Release
 
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test ./Json.Net.Tests/*.csproj --verbosity normal
 
     - name: Generate package
-      run: dotnet pack --configuration Release
+      run: dotnet pack ./Json.Net/*.csproj --no-build --configuration Release -o out |
+           dotnet pack ./Json.Net.Core/*.csproj --no-build --configuration Release -o out
+           
+    - name: Push generated package to Nuget registry
+      run: dotnet nuget push ./out/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true --source https://api.nuget.org/v3/index.json
