@@ -27,8 +27,8 @@ jobs:
       run: dotnet test ./Json.Net.Tests/*.csproj --verbosity normal
 
     - name: Generate package
-      run: dotnet pack ./Json.Net/*.csproj --no-build -o out |
-           dotnet pack ./Json.Net.Core/*.csproj --no-build -o out
+      run: dotnet pack ./Json.Net/*.csproj --no-build --configuration Release -o out |
+           dotnet pack ./Json.Net.Core/*.csproj --no-build --configuration Release -o out
            
     - name: Push generated package to GitHub registry
       run: dotnet nuget push ./out/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true --source https://api.nuget.org/v3/index.json
