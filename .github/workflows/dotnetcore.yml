@@ -2,12 +2,12 @@ name: Release
 
 on: [workflow_dispatch]
 
-concurrency: 
-  group: ${{ github.head_ref }}
-  cancel-in-progress: true
-
 jobs:
   release:
+    concurrency: 
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
+
     runs-on: ubuntu-latest
 
     steps:
